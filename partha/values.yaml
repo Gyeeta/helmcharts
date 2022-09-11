@@ -1,0 +1,94 @@
+
+# Default values for partha (Gyeeta Host Monitor Agent) :
+
+image:
+  registry: ghcr.io
+  repository: gyeeta/partha
+  # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Secrets containing credentials when pulling from private/secure registries.
+imagePullSecrets: []
+
+# Set a new name if you want to override the release name used for partha
+nameOverride: ""
+
+# Same as nameOverride but for the fullname.
+fullnameOverride: ""
+
+# Add additional pod annotations
+podAnnotations: {}
+
+# Add additional pod labels
+podLabels: {}
+
+# Set pod priorityClassName
+podPriorityClassName:
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 150Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+
+# Selectors used to deploy on a given node/nodes.
+nodeSelector: {}
+
+# Affinity constraint for pods' scheduling.
+affinity: {}
+
+# Tolerations to allow partha to run on masters.
+tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+
+mounts:
+  # A list of volumes you want to add 
+  volumes: []
+  # A list of volumes you want to add
+  volumeMounts: []
+
+extra:
+  # -- Extra environment variables that will be pass onto partha container
+  env: {}
+  # -- Extra command-line arguments.
+  args: []
+
+#
+# partha config  
+#
+config:
+
+  # Cluster Name (Mandatory)
+  cluster_name: ""
+
+  # Cloud Operator (Mandatory) : Specify as aws/gcp/azure/on-prem
+  cloud_type: ""
+
+  # Region Name : Use if cloud_type is set as on-prem or to override the cloud region name
+  region_name: ""
+
+  # Zone Name : Use if cloud_type is set as on-prem or to override the cloud zone name
+  zone_name: ""
+
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  shyama_hosts: []
+
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  shyama_hosts: []
+
+  # Percent of Responses to be analyzed with eBPF for Response Time Calculations
+  response_sampling_percent: 100
+
+  # Capture HTTP Error codes
+  capture_errcode: true
+
+  # Log to stdout and stderr. If false will use the emptyDir mount point for logging
+  log_stdout: true
+
+  # Log Debug Level
+  debuglevel: 0
+
