@@ -73,7 +73,7 @@ Compile all warnings into a single message, and call fail.
 {{- $message := join "\n" $messages -}}
 
 {{- if $message -}}
-{{- printf "\nVALUES VALIDATION:\n%s" $message | fail -}}
+{{- printf "\n\n\nValues Validation failed (Please set the appropriate value using --set option or values.yaml file) :\n%s" $message | fail -}}
 {{- end -}}
 {{- end -}}
 
