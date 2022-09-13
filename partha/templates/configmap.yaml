@@ -7,4 +7,6 @@ metadata:
     {{- include "partha.labels" . | nindent 4 }}
 data:
   partha_main.json: |-
-    {{- mustToPrettyJson .Values.partha_config }}
+    {{ mustToJson .Values.partha_config }}
+
+

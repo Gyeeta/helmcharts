@@ -78,7 +78,7 @@ spec:
           name: sys
         - mountPath: /etc/partha
           name: config-volume
-        {{- if $parthavol -}}
+        {{- if $parthavol }}
         - mountPath: /hostdata
           name: parthavol
         {{- end }}  
@@ -86,7 +86,7 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
   volumes:
-    {{- if $parthavol -}}
+    {{- if $parthavol }}
     - name: parthavol
       emptyDir: {}
     {{- end }}  

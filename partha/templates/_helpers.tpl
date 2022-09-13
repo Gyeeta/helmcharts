@@ -110,7 +110,7 @@ partha: partha_config.shyama_hosts
     Shyama Server Host not of string type.
     Please provide Shyama Server Hosts in string format and Ports in integer format.
     Please refer to https://gyeeta.io/docs/installation/partha_config
-{{- else if ne (kindOf (index .Values.partha_config.shyama_ports 0)) "int" }}
+{{- else if eq (kindOf (index .Values.partha_config.shyama_ports 0)) "string" }}
 partha: partha_config.shyama_ports
     Shyama Server Port not of integer type.
     Please provide Shyama Server Ports in integer format.
