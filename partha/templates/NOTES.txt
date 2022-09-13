@@ -1,0 +1,15 @@
+CHART NAME: {{ .Chart.Name }}
+CHART VERSION: {{ .Chart.Version }}
+APP VERSION: {{ .Chart.AppVersion }}
+
+Please be patient while the chart is being deployed...
+
+Gyeeta partha agents are starting on each node in your cluster. After a few
+seconds, they are going to start monitoring your hosts.
+
+For further documentation on Gyeeta, please refer to :
+
+https://gyeeta.io/docs
+
+{{- include "partha.validateValues" . -}}
+

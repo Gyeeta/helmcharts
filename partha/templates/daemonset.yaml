@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "partha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "partha.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "partha.selectorLabels" . | nindent 6 }}
+  template:
+    {{- include "partha.podDefinition" . | nindent 4 }}
+  {{- with .Values.updateStrategy }}
+  updateStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
+

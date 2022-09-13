@@ -24,26 +24,31 @@ podAnnotations: {}
 podLabels: {}
 
 # Set pod priorityClassName
-podPriorityClassName:
+podPriorityClassName: ""
 
 resources:
   requests:
-    cpu: 200m
+    cpu: 100m
     memory: 150Mi
   limits:
     cpu: 1000m
     memory: 1024Mi
 
-# Selectors used to deploy on a given node/nodes.
+# Selectors used to deploy on a given nodes
 nodeSelector: {}
 
-# Affinity constraint for pods' scheduling.
+# Affinity constraint for pod scheduling
 affinity: {}
 
-# Tolerations to allow partha to run on masters.
+updateStrategy:
+  # -- Perform rolling updates by default in the DaemonSet agent
+  # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  type: RollingUpdate
+
+# Tolerations to allow partha to run on master nodes
 tolerations:
-  - effect: NoSchedule
-    key: node-role.kubernetes.io/master
+  - operator: Exists
+    effect: NoSchedule
 
 mounts:
   # A list of volumes you want to add 
@@ -60,12 +65,17 @@ extra:
 #
 # partha config  
 #
-config:
-
+partha_config:
   # Cluster Name (Mandatory)
   cluster_name: ""
 
-  # Cloud Operator (Mandatory) : Specify as aws/gcp/azure/on-prem
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  shyama_hosts: []
+
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  shyama_ports: []
+
+  # Cloud Operator : Specify as either of aws, gcp, azure or on-prem
   cloud_type: ""
 
   # Region Name : Use if cloud_type is set as on-prem or to override the cloud region name
@@ -74,20 +84,14 @@ config:
   # Zone Name : Use if cloud_type is set as on-prem or to override the cloud zone name
   zone_name: ""
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
-  shyama_hosts: []
-
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
-  shyama_hosts: []
-
   # Percent of Responses to be analyzed with eBPF for Response Time Calculations
   response_sampling_percent: 100
 
   # Capture HTTP Error codes
   capture_errcode: true
 
-  # Log to stdout and stderr. If false will use the emptyDir mount point for logging
-  log_stdout: true
+  # Debug and Process Log to file instead of stdout/stderr. If true will use the emptyDir mount point for logging to log/partha.log
+  logtofile: false
 
   # Log Debug Level
   debuglevel: 0
