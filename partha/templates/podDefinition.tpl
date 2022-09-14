@@ -56,10 +56,10 @@ spec:
         - start
         - --cfg_json_file
         - /etc/partha/partha_main.json
-        {{- if not .Values.logtofile }}
+        {{- if not .Values.partha_config.logtofile }}
         - --nolog
         {{- end }}
-        {{- if .Values.debuglevel }}
+        {{- if .Values.partha_config.debuglevel }}
         - --debuglevel
         - {{ .Values.debuglevel }}
         {{- end }}
