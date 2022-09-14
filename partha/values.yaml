@@ -96,3 +96,6 @@ partha_config:
   # Log Debug Level
   debuglevel: 0
 
+  # Enable Kubernetes Tag collection
+  is_kubernetes: true
+
