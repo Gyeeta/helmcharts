@@ -26,6 +26,9 @@ podLabels: {}
 # Set pod priorityClassName
 podPriorityClassName: ""
 
+# Enable PodSecurityPolicy (only for K8s versions < 1.25)
+podSecurityPolicy: true
+
 resources:
   requests:
     cpu: 100m
