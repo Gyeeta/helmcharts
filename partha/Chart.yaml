@@ -8,7 +8,6 @@ keywords:
   - observability
   - monitoring
   - analytics
-  - alerting
   - ebpf
 maintainers:
   - name: Gyeeta
