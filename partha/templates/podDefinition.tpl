@@ -61,12 +61,16 @@ spec:
         {{- end }}
         {{- if .Values.partha_config.debuglevel }}
         - --debuglevel
-        - {{ .Values.debuglevel }}
+        - {{ .Values.partha_config.debuglevel }}
         {{- end }}
         {{- with .Values.extra.args }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
       env:
+      {{- if .Values.partha_config.install_kern_headers }}
+      - name: "CFG_HOST_INSTALL_PKG"
+        value : "1"
+      {{- end }}
       {{- range $key, $value := .Values.extra.env }}
         - name: "{{ $key }}"
           value: "{{ $value }}"

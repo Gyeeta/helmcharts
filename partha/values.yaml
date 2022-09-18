@@ -102,3 +102,6 @@ partha_config:
   # Enable Kubernetes Tag collection
   is_kubernetes: true
 
+  # Install Kernel Headers on hosts without Kernel Headers. Note this feature is beta and valid only for Debian, Ubuntu, and Redhat/Amazon Linux
+  install_kern_headers: false
+
