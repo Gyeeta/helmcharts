@@ -1,0 +1,21 @@
+apiVersion: v2
+version: 0.1.0
+appVersion: 12.2.0
+description: Provides PostgreSQL (Postgres), the database used by Gyeeta server components (Shyama and Madhava)
+home: https://github.com/Gyeeta/helmcharts/tree/main/postgresdb
+icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+keywords:
+  - postgresql
+  - database
+  - sql
+  - monitoring
+  - analytics
+maintainers:
+  - name: Gyeeta
+    url: https://github.com/Gyeeta/helmcharts
+name: postgresdb
+sources:
+  - https://github.com/Gyeeta/gyeeta
+home: https://gyeeta.io
+annotations:
+  category: Database

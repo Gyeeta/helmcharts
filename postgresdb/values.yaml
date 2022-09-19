@@ -1,0 +1,101 @@
+
+# Default values for partha (Gyeeta Host Monitor Agent) :
+
+image:
+  registry: ghcr.io
+  repository: gyeeta/partha
+  # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Secrets containing credentials when pulling from private/secure registries.
+imagePullSecrets: []
+
+# Set a new name if you want to override the release name used for partha
+nameOverride: ""
+
+# Same as nameOverride but for the fullname.
+fullnameOverride: ""
+
+# Add additional pod annotations
+podAnnotations: {}
+
+# Add additional pod labels
+podLabels: {}
+
+# Set pod priorityClassName
+podPriorityClassName: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 150Mi
+  limits:
+    cpu: 1000m
+    memory: 1024Mi
+
+# Selectors used to deploy on a given nodes
+nodeSelector: {}
+
+# Affinity constraint for pod scheduling
+affinity: {}
+
+updateStrategy:
+  # -- Perform rolling updates by default in the DaemonSet agent
+  # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  type: RollingUpdate
+
+# Tolerations to allow partha to run on master nodes
+tolerations:
+  - operator: Exists
+    effect: NoSchedule
+
+mounts:
+  # A list of volumes you want to add 
+  volumes: []
+  # A list of volumes you want to add
+  volumeMounts: []
+
+extra:
+  # -- Extra environment variables that will be pass onto partha container
+  env: {}
+  # -- Extra command-line arguments.
+  args: []
+
+#
+# partha config  
+#
+partha_config:
+  # Cluster Name (Mandatory)
+  cluster_name: ""
+
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  shyama_hosts: []
+
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  shyama_ports: []
+
+  # Cloud Operator : Specify as either of aws, gcp, azure or on-prem
+  cloud_type: ""
+
+  # Region Name : Use if cloud_type is set as on-prem or to override the cloud region name
+  region_name: ""
+
+  # Zone Name : Use if cloud_type is set as on-prem or to override the cloud zone name
+  zone_name: ""
+
+  # Percent of Responses to be analyzed with eBPF for Response Time Calculations
+  response_sampling_percent: 100
+
+  # Capture HTTP Error codes
+  capture_errcode: true
+
+  # Debug and Process Log to file instead of stdout/stderr. If true will use the emptyDir mount point for logging to log/partha.log
+  logtofile: true
+
+  # Log Debug Level
+  debuglevel: 0
+
+  # Enable Kubernetes Tag collection
+  is_kubernetes: true
+
