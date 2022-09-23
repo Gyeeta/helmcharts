@@ -6,7 +6,7 @@ App Version: {{ .Chart.AppVersion }}
 
 Please be patient while the chart is being deployed...
 
-PostgreSQL can be accessed via port {{ include "postgresql.service.port" . }} on the following DNS name from within your cluster:
+PostgreSQL can be accessed via port {{ .Values.postgresdb_config.service.port }} on the following DNS name from within your cluster:
 
     {{ include "postgresdb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local 
 
@@ -18,7 +18,7 @@ To get the password for "postgres" user run:
 To connect to your database run the following command:
 
     kubectl run {{ include "postgresdb.fullname" . }}-client --rm --tty -i --restart='Never' --namespace {{ .Release.Namespace }} --image {{ include "postgresdb.image" . }} --env="PGPASSWORD=$POSTGRES_PASSWORD" \
-      --command -- /postgresdb/bin/psql --host {{ include "postgresdb.fullname" . }} -U postgres -d postgres -p {{ include "postgresdb_config.service.port" . }}
+      --command -- /postgresdb/bin/psql --host {{ include "postgresdb.fullname" . }} -U postgres -d postgres -p {{ .Values.postgresdb_config.service.port }}
 
 To connect to your database from outside the cluster execute the following commands:
 
@@ -34,12 +34,12 @@ To connect to your database from outside the cluster execute the following comma
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "postgresdb.fullname" . }}'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "postgresdb.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
-    PGPASSWORD="$POSTGRES_PASSWORD" psql --host $SERVICE_IP --port {{ include "postgresdb_config.service.port" . }} -U postgres -d postgres
+    PGPASSWORD="$POSTGRES_PASSWORD" psql --host $SERVICE_IP --port {{ .Values.postgresdb_config.service.port }} -U postgres -d postgres
 
 {{- else if contains "ClusterIP" .Values.postgresdb_config.service.type }}
 
-    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ include "postgresdb.fullname" . }} {{ include "postgresdb_config.service.port" . }}:{{ include "postgresdb_config.service.port" . }} &
-    PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p {{ include "postgresdb_config.service.port" . }}
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ include "postgresdb.fullname" . }} {{ .Values.postgresdb_config.service.port }}:{{ .Values.postgresdb_config.service.port }} &
+    PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p {{ .Values.postgresdb_config.service.port }}
 
 {{- end }}
 

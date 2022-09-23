@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "postgresdb.fullname" . }}
+  name: {{ include "postgresdb.fullname" . }}-headless
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "postgresdb.labels" . | nindent 4 }}
@@ -16,8 +16,7 @@ spec:
   clusterIP: None
   ports:
     - name: tcp-postgresql
-      port: {{ .Values.postgresdb_config.port }}
+      port: {{ .Values.postgresdb_config.service.port }}
       targetPort: tcp-postgresql
   selector:
-    matchLabels:
-      {{- include "postgresdb.selectorLabels" . | nindent 6 }}
+    {{- include "postgresdb.selectorLabels" . | nindent 4 }}

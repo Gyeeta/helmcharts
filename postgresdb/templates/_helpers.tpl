@@ -131,9 +131,9 @@ Return a soft podAffinity/podAntiAffinity definition
 preferredDuringSchedulingIgnoredDuringExecution:
   - podAffinityTerm:
       labelSelector:
-        matchLabels: {{- (include "postgresdb.selectorLabels" .) | nindent 10 }}
+        matchLabels: {{- (include "postgresdb.selectorLabels" .context) | nindent 10 }}
       namespaces:
-        - {{ .Release.Namespace | quote }}
+        - {{ .context.Release.Namespace | quote }}
       topologyKey: kubernetes.io/hostname
     weight: 1
 {{- end -}}
@@ -145,9 +145,9 @@ Return a hard podAffinity/podAntiAffinity definition
 {{- define "postgresdb.affinities.pods.hard" -}}
 requiredDuringSchedulingIgnoredDuringExecution:
   - labelSelector:
-      matchLabels: {{- (include "postgresdb.selectorLabels" .) | nindent 10 }}
+      matchLabels: {{- (include "postgresdb.selectorLabels" .context) | nindent 10 }}
     namespaces:
-      - {{ .Release.Namespace | quote }}
+      - {{ .context.Release.Namespace | quote }}
     topologyKey: kubernetes.io/hostname
 {{- end -}}
 

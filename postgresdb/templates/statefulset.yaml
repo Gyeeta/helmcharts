@@ -16,14 +16,14 @@ spec:
     metadata:
       name: {{ include "postgresdb.fullname" . }}
       labels:
-        {{- include "postgresdb.selectorLabels" . | nindent 4 }}
+        {{- include "postgresdb.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
-          {{- toYaml . | nindent 4 }}
+          {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
-          {{- toYaml . | nindent 4 }}
+          {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:          
       {{- if .Values.hostAliases }}
@@ -34,7 +34,7 @@ spec:
       {{- else }}
       affinity:
         podAffinity: {{- include "postgresdb.affinities.pods" (dict "type" .Values.podAffinityPreset "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "postgresdb.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "postgresdb.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "component" "primary" "context" $) | nindent 10 }}
         nodeAffinity: {{- include "postgresdb.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
       {{- end }}
       {{- if .Values.nodeSelector }}
@@ -61,17 +61,15 @@ spec:
             runAsNonRoot: false
             runAsUser: 0
           command: ["chown", "-R", "1001:1001", "/dbdata"]
-          resources:
-            {{ toYaml .Values.initChownData.resources | indent 12 }}
+          resources: {{- toYaml .Values.initChownData.resources | indent 12 }}
           volumeMounts:
             - name: dbdata
               mountPath: "/dbdata"
       {{- end }}
-        - name: gyeetaInitPostgres
+        - name: init-postgres
           image: {{ include "postgresdb.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.resources | nindent 8 }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
             runAsNonRoot: true
             runAsUser: 1001
@@ -79,10 +77,10 @@ spec:
             - name: CFG_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "postgresql.fullname" . }}
+                  name: {{ include "postgresdb.fullname" . }}
                   key: "postgres-password"
             - name: CFG_POSTGRES_PORT
-              value: {{ .Values.postgresdb_config.port | quote }}
+              value: {{ .Values.postgresdb_config.service.port | quote }}
           {{- range $key, $value := .Values.extra.envinit }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
@@ -92,10 +90,6 @@ spec:
             {{- with .Values.extra.argsinit }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
-          {{- if .Values.resources }}
-          resources:
-            {{ toYaml .Values.resources | indent 12 }}
-          {{- end }}              
           volumeMounts:
             - name: dbdata
               mountPath: "/dbdata"
@@ -106,8 +100,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ include "postgresdb.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
             runAsNonRoot: true
             runAsUser: 1001
@@ -124,7 +117,7 @@ spec:
           {{- end }}
           ports:
             - name: tcp-postgresql
-              containerPort: {{ .Values.postgresdb_config.port }}
+              containerPort: {{ .Values.postgresdb_config.service.port }}
           {{- if .Values.livenessEnabled }}    
           livenessProbe:
             initialDelaySeconds: 5
@@ -136,11 +129,11 @@ spec:
               command:
                 - /bin/bash
                 - -c
-                - exec /postgresdb/bin/pg_isready -U "postgres" -h 127.0.0.1 -p {{ .Values.postgresdb_config.port }}
+                - exec /postgresdb/bin/pg_isready -U "postgres" -h 127.0.0.1 -p {{ .Values.postgresdb_config.service.port }}
           {{- end }}      
           volumeMounts:
            - name: dbdata
-              mountPath: "/dbdata"
+             mountPath: "/dbdata"
            {{- with .Values.mounts.volumeMounts }}
              {{- toYaml . | nindent 12 }}
            {{- end }}              
@@ -162,7 +155,7 @@ spec:
         {{- with .Values.mounts.volumes }}
           {{- toYaml . | nindent 4 }}
         {{- end }}
-  {- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+  {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
   volumeClaimTemplates:
     - metadata:
         name: data

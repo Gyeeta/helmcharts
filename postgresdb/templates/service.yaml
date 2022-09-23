@@ -27,14 +27,13 @@ spec:
   {{- end }}
   ports:
     - name: tcp-postgresql
-      port: {{ .Values.postgresdb_config.port }}
+      port: {{ .Values.postgresdb_config.service.port }}
       targetPort: tcp-postgresql
-      {{- if and (or (eq .Values.postgresdb_config.service.type "NodePort") (eq .Values.postgresdb_config.service.type "LoadBalancer")) (not (empty .Values.postgresdb_config.service.nodePorts.postgresql)) }}
-      nodePort: {{ .Values.postgresdb_config.service.nodePorts.postgresql }}
+      {{- if and (or (eq .Values.postgresdb_config.service.type "NodePort") (eq .Values.postgresdb_config.service.type "LoadBalancer")) (not (empty .Values.postgresdb_config.service.nodePort)) }}
+      nodePort: {{ .Values.postgresdb_config.service.nodePort }}
       {{- else if eq .Values.postgresdb_config.service.type "ClusterIP" }}
       nodePort: null
       {{- end }}
   selector:
-    matchLabels:
-      {{- include "postgresdb.selectorLabels" . | nindent 6 }}
+    {{- include "postgresdb.selectorLabels" . | nindent 4 }}
 
