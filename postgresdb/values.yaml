@@ -1,9 +1,9 @@
 
-# Default values for partha (Gyeeta Host Monitor Agent) :
+# Default values for Gyeeta PostgreSQL DB :
 
 image:
   registry: ghcr.io
-  repository: gyeeta/partha
+  repository: gyeeta/postgresdb
   # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
   tag: ""
   pullPolicy: IfNotPresent
@@ -11,11 +11,15 @@ image:
 # Secrets containing credentials when pulling from private/secure registries.
 imagePullSecrets: []
 
-# Set a new name if you want to override the release name used for partha
+# Set a new name if you want to override the release name used for postgresdb
 nameOverride: ""
 
 # Same as nameOverride but for the fullname.
 fullnameOverride: ""
+
+# PostgreSQL pods host aliases
+# https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+hostAliases: []
 
 # Add additional pod annotations
 podAnnotations: {}
@@ -26,76 +30,174 @@ podLabels: {}
 # Set pod priorityClassName
 podPriorityClassName: ""
 
+# Affinity constraint for pod scheduling
+# Note: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+affinity: {}
+
+# Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+# ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+podAffinityPreset: ""
+
+# Pod anti-affinity preset. Ignored if `primary.affinity` is set. Allowed values: `soft` or `hard`
+podAntiAffinityPreset: soft
+
+# Node affinity preset
+nodeAffinityPreset:
+  # Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  type: ""
+
+  # Node label key to match Ignored if `affinity` is set.
+  # E.g.
+  # key: "kubernetes.io/e2e-az-name"
+  #
+  key: ""
+
+  # Node label values to match. Ignored if `affinity` is set.
+  # E.g.
+  # values:
+  #   - e2e-az1
+  #   - e2e-az2
+  #
+  values: []
+
 resources:
-  requests:
-    cpu: 100m
-    memory: 150Mi
-  limits:
-    cpu: 1000m
-    memory: 1024Mi
+  requests: {}
+  #  cpu: 250m
+  #  memory: 150Mi
+  limits: {}
+  #  cpu: 4000m
+  #  memory: 64Gi
 
 # Selectors used to deploy on a given nodes
 nodeSelector: {}
 
-# Affinity constraint for pod scheduling
-affinity: {}
+# Tolerations for pods assignment
+tolerations: []
+
+# Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template
+# Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
+topologySpreadConstraints: []
+
+# Automate configuration before or after startup
+lifecycleHooks: {}
 
 updateStrategy:
   # -- Perform rolling updates by default in the DaemonSet agent
   # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   type: RollingUpdate
 
-# Tolerations to allow partha to run on master nodes
-tolerations:
-  - operator: Exists
-    effect: NoSchedule
+# livenessProbe 
+livenessEnabled: true
 
 mounts:
-  # A list of volumes you want to add 
+  # A list of extra volumes you want to add 
   volumes: []
-  # A list of volumes you want to add
+  # A list of extra volumes you want to add
   volumeMounts: []
 
 extra:
-  # -- Extra environment variables that will be pass onto partha container
+  # -- Extra environment variables that will be pass onto postgresdb container
   env: {}
-  # -- Extra command-line arguments.
+  # -- Extra command-line arguments
   args: []
+  # -- Extra environment variables that will be pass onto postgresdb init db container
+  envinit: {}
+  # -- Extra command-line arguments for postgresdb init container
+  argsinit: []
+
 
 #
-# partha config  
+# postgresdb config  
 #
-partha_config:
-  # Cluster Name (Mandatory)
-  cluster_name: ""
+postgresdb_config:
+  password: ""
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
-  shyama_hosts: []
+  service:
+    # Kubernetes Service type (Specify either ClusterIP or NodePort)
+    type: ClusterIP
 
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
-  shyama_ports: []
+    # PostgreSQL service port
+    port: 10040
 
-  # Cloud Operator : Specify as either of aws, gcp, azure or on-prem
-  cloud_type: ""
+    # Node port to expose
+    # NOTE: choose port between <30000-32767>
+    # ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    nodePort: ""
 
-  # Region Name : Use if cloud_type is set as on-prem or to override the cloud region name
-  region_name: ""
+    # Static clusterIP or None for headless services
+    clusterIP: ""
 
-  # Zone Name : Use if cloud_type is set as on-prem or to override the cloud zone name
-  zone_name: ""
+    # Service Annotations 
+    annotations: {}
 
-  # Percent of Responses to be analyzed with eBPF for Response Time Calculations
-  response_sampling_percent: 100
+    # Load balancer IP if service type is `LoadBalancer`
+    # Set the LoadBalancer service type to internal only
+    loadBalancerIP: ""
 
-  # Capture HTTP Error codes
-  capture_errcode: true
+    # Enable client source IP preservation for LoadBalancer or NodePort
+    # ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    externalTrafficPolicy: Cluster
 
-  # Debug and Process Log to file instead of stdout/stderr. If true will use the emptyDir mount point for logging to log/partha.log
-  logtofile: true
+    # Addresses that are allowed when service is LoadBalancer
+    # loadBalancerSourceRanges:
+    # - 10.10.10.0/24
+    loadBalancerSourceRanges: []
 
-  # Log Debug Level
-  debuglevel: 0
+persistence:
+  # persistence.enabled PostgreSQL data persistence using PVC. If false, will use emptyDir (delete on pod termination) instead
+  enabled: true
 
-  # Enable Kubernetes Tag collection
-  is_kubernetes: true
+  # Name of an existing PVC to use
+  existingClaim: ""
+
+  # PVC Storage Class for PostgreSQL data volume (Use only for Cloud installs)
+  # If set to "-", disables dynamic provisioning
+  # If undefined (the default) or set to null, the default provisioner is used.  (gp2 on AWS, standard on GKE, AWS & OpenStack)
+  storageClass: ""
+
+  # PVC Access Mode for PostgreSQL volume
+  accessModes:
+    - ReadWriteOnce
+
+  # PVC Storage Size for PostgreSQL volume
+  size: 10Gi
+
+  # Annotations for the PVC
+  annotations: {}
+
+  # Selector to match an existing Persistent Volume (this value is evaluated as a template)
+  # selector:
+  #   matchLabels:
+  #     app: my-app
+  selector: {}
+
+  # Custom PVC dataSource
+  dataSource: {}
+  
+  # Custom PVC dataSourceRef (K8s versions 1.24+) (If specified dataSource will be ignored)
+  dataSourceRef: {}
+
+initChownData:
+  # If false, data ownership will not be reset at startup
+  enabled: false
+
+  # initChownData container image
+  image:
+    repository: busybox
+    tag: "1.34.1"
+    sha: ""
+    pullPolicy: IfNotPresent
+
+  # initChownData resource requests and limits
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+
+# Enable PodSecurityPolicy (only for K8s versions < 1.25)
+podSecurityPolicy: false
+
 

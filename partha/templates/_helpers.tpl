@@ -120,4 +120,16 @@ partha: partha_config.shyama_ports
 {{- end -}}
 {{- end -}}
 
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "partha.tplvalues" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "partha.tplvalues" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
 
