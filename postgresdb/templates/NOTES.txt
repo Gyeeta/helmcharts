@@ -14,10 +14,11 @@ To get the password for "postgres" user run:
 
     export POSTGRES_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "postgresdb.fullname" . }} -o jsonpath="{.data.postgres-password}" | base64 -d)
 
+To connect to your database run the following commands :
 
-To connect to your database run the following command:
+    export POSTGRES_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "postgresdb.fullname" . }} -o jsonpath="{.data.postgres-password}" | base64 -d)
 
-    kubectl run {{ include "postgresdb.fullname" . }}-client --rm --tty -i --restart='Never' --namespace {{ .Release.Namespace }} --image {{ include "postgresdb.image" . }} --env="PGPASSWORD=$POSTGRES_PASSWORD" \
+    kubectl run {{ include "postgresdb.fullname" . }}-client --rm -it --restart='Never' --namespace {{ .Release.Namespace }} --image {{ include "postgresdb.image" . }} --env="PGPASSWORD=$POSTGRES_PASSWORD" \
       --command -- /postgresdb/bin/psql --host {{ include "postgresdb.fullname" . }} -U postgres -d postgres -p {{ .Values.postgresdb_config.service.port }}
 
 To connect to your database from outside the cluster execute the following commands:
