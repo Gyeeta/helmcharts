@@ -12,6 +12,9 @@ spec:
   serviceName: {{ include "postgresdb.fullname" . }}-headless
   replicas: 1
   minReadySeconds: 10
+  {{- if .Values.updateStrategy }}
+  updateStrategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       name: {{ include "postgresdb.fullname" . }}

@@ -8,7 +8,7 @@ Please be patient while the chart is being deployed...
 
 PostgreSQL can be accessed via port {{ .Values.postgresdb_config.service.port }} on the following DNS name from within your cluster:
 
-    {{ include "postgresdb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local 
+    {{ include "postgresdb.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local 
 
 To get the password for "postgres" user run:
 

@@ -82,9 +82,9 @@ topologySpreadConstraints: []
 lifecycleHooks: {}
 
 updateStrategy:
-  # -- Perform rolling updates by default in the DaemonSet agent
-  # ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  # -- Perform rolling updates by default
   type: RollingUpdate
+  rollingUpdate: {}
 
 # livenessProbe 
 livenessEnabled: true
