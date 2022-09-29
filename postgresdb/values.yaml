@@ -119,8 +119,7 @@ postgresdb_config:
     # PostgreSQL service port
     port: 10040
 
-    # Node port to expose
-    # NOTE: choose port between <30000-32767>
+    # Specify if type set to NodePort. Choose port between <30000-32767>
     # ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     nodePort: ""
 
@@ -134,7 +133,7 @@ postgresdb_config:
     # Set the LoadBalancer service type to internal only
     loadBalancerIP: ""
 
-    # Enable client source IP preservation for LoadBalancer or NodePort
+    # Enable client source IP preservation for type set to LoadBalancer or NodePort
     # ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
     externalTrafficPolicy: Cluster
 

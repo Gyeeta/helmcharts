@@ -1,0 +1,24 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "shyama.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "shyama.labels" . | nindent 4 }}
+{{- with .Values.podAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  podSelector:
+    matchLabels:
+    {{- include "shyama.selectorLabels" . | nindent 6 }}
+  ingress:
+    # Allow inbound connections
+    - ports:
+       - port: {{ .Values.shyama_config.service.port }}
+       {{- if and .Values.postgresdb.enabled .Values.postgresdb.postgresdb_service }}
+       - port: {{ .Values.postgresdb.postgresdb_config.service.port }}
+       {{- end }}
+{{- end }}

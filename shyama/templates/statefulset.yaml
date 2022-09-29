@@ -1,0 +1,284 @@
+{{- $shyamavol := true -}}
+{{- range .Values.mounts.volumeMounts }}
+  {{- if eq .mountPath "/hostdata" -}}
+    {{- $shyamavol := false -}}
+  {{- end -}} 
+{{- end -}}
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "shyama.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "shyama.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "shyama.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "shyama.fullname" . }}-headless
+  replicas: 1
+  minReadySeconds: 10
+  {{- if .Values.updateStrategy }}
+  updateStrategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      name: {{ include "shyama.fullname" . }}
+      labels:
+        {{- include "shyama.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{ - if .Values.postgresdb.enabled }}
+        checksum/secret-postgresdb: {{ include (print $.Template.BasePath "/secret-postgresdb.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:          
+      {{- if .Values.hostAliases }}
+      hostAliases: {{- include "shyama.tplvalues" (dict "value" .Values.hostAliases "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity: {{- include "shyama.tplvalues" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAffinity: {{- include "shyama.affinities.pods" (dict "type" .Values.podAffinityPreset "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "shyama.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "component" "primary" "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "shyama.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector: {{- include "shyama.tplvalues" (dict "value" .Values.nodeSelector "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations: {{- include "shyama.tplvalues" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints: {{- include "shyama.tplvalues" (dict "value" .Values.topologySpreadConstraints "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.podPriorityClassName }}
+      priorityClassName: {{ .Values.podPriorityClassName }}
+      {{- end }}
+      terminationGracePeriodSeconds: 10
+      securityContext:
+        fsGroup: 1001
+      initContainers:
+      {{- if ( and .Values.postgresdb.enabled  .Values.postgresdb.persistence.enabled .Values.postgresdb.initChownData.enabled ) }}
+        - name: init-chown-data
+          image: "{{ .Values.postgresdb.initChownData.image.repository }}:{{ .Values.postgresdb.initChownData.image.tag }}"
+          imagePullPolicy: {{ .Values.postgresdb.initChownData.image.pullPolicy }}
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+          command: ["chown", "-R", "1001:1001", "/dbdata"]
+          resources: {{- toYaml .Values.postgresdb.initChownData.resources | indent 12 }}
+          volumeMounts:
+            - name: dbdata
+              mountPath: "/dbdata"
+      {{- end }}
+      {{- if .Values.postgresdb.enabled }}
+        - name: init-postgres
+          image: {{ include "shyama.postgresdb.image" . }}
+          imagePullPolicy: {{ .Values.postgresdb.image.pullPolicy }}
+          resources: {{- toYaml .Values.postgresdb.resources | nindent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          env:
+            - name: CFG_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "shyama.postgresdb.fullname" . }}
+                  key: "CFG_POSTGRES_PASSWORD"
+            - name: CFG_POSTGRES_PORT
+              value: {{ .Values.postgresdb.postgresdb_config.service.port | quote }}
+          {{- range $key, $value := .Values.postgresdb.extra.envinit }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          args:
+            - "--initdb"
+            {{- with .Values.postgresdb.extra.argsinit }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: dbdata
+              mountPath: "/dbdata"
+            {{- with .Values.postgresdb.mounts.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}              
+      {{- end }}
+      containers:
+        - name: shyama
+          image: {{ include "shyama.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            readOnlyRootFilesystem: true 
+          args:
+            - start
+            {{- with .Values.extra.args }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          env:
+          {{- if and ( not .Values.postgresdb.enabled ) .Values.shyama_config.db.postgres_password }}
+            - name: "CFG_POSTGRES_PASSWORD"
+              value: {{- include "shyama.tplvalues" (dict "value" .Values.shyama_config.db.postgres_password "context" $) | quote }}
+          {{- end }}
+            - name: "CFG_MAIN_JSON"
+              value: "/etc/shyama/shyama_main.json
+          {{- with .Values.shyama_config }}
+          {{- if and .alertactions (typeIs "string" .alertactions) }}
+            - name: "CFG_ACTIONS_JSON"
+              value: "/etc/shyama/alertactions.json"
+          {{- end }}
+          {{- if and .alertdefs (typeIs "string" .alertdefs) }}
+            - name: "CFG_ALERTDEFS_JSON"
+              value: "/etc/shyama/alertdefs.json"
+          {{- end }}
+          {{- if and .alertsilences (typeIs "string" .alertsilences) }}
+            - name: "CFG_SILENCES_JSON"
+              value: "/etc/shyama/alertsilences.json"
+          {{- end }}
+          {{- if and .alertinhibits (typeIs "string" .alertinhibits) }}
+            - name: "CFG_INHIBITS_JSON"
+              value: "/etc/shyama/alertinhibits.json"
+          {{- end }}
+          {{- end }}
+          {{- range $key, $value := .Values.extra.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          envFrom:
+            - secretRef:
+              name: {{ include "shyama.fullname" . }}
+            {{- if .Values.postgresdb.enabled }}
+            - secretRef:
+              name: {{ include "shyama.postgresdb.fullname" . }}
+            {{- end }}  
+          ports:
+            - name: tcp-shyama
+              containerPort: {{ .Values.shyama_config.service.port }}
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/shyama         
+          {{- if $shyamavol }}
+          - mountPath: /hostdata
+            name: shyamavol
+          {{- end }}  
+          {{- with .Values.mounts.volumeMounts }}
+             {{- toYaml . | nindent 10 }}
+          {{- end }}              
+          readinessProbe:
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 6
+            tcpSocket:
+              port: {{ .Values.shyama_config.service.port }}
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.lifecycleHooks }}
+          lifecycle: {{- include "shyama.tplvalues" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
+          {{- end }}
+      {{- if .Values.postgresdb.enabled }}
+        - name: postgresdb
+          image: {{ include "shyama.postgresdb.image" . }}
+          imagePullPolicy: {{ .Values.postgresdb.image.pullPolicy }}
+          resources: {{- toYaml .Values.postgresdb.resources | nindent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            readOnlyRootFilesystem: true 
+          args:
+            - start
+            {{- with .Values.postgresdb.extra.args }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          env:
+          {{- range $key, $value := .Values.postgresdb.extra.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          ports:
+            - name: tcp-postgresql
+              containerPort: {{ .Values.postgresdb.postgresdb_config.service.port }}
+          {{- if .Values.postgresdb.livenessEnabled }}    
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+            successThreshold: 1
+            exec:
+              command:
+                - /bin/bash
+                - -c
+                - exec /postgresdb/bin/pg_isready -U "postgres" -h 127.0.0.1 -p {{ .Values.postgresdb.postgresdb_config.service.port }}
+          {{- end }}      
+          volumeMounts:
+            - name: dbdata
+              mountPath: "/dbdata"
+            {{- with .Values.postgresdb.mounts.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}              
+          {{- if .Values.postgresdb.resources }}
+          resources: {{- toYaml .Values.postgresdb.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.postgresdb.lifecycleHooks }}
+          lifecycle: {{- include "shyama.tplvalues" (dict "value" .Values.postgresdb.lifecycleHooks "context" $) | nindent 12 }}
+          {{- end }}
+      {{- end }}
+      volumes:
+        {{- if and .Values.postgresdb.enabled .Values.postgresdb.persistence.enabled .Values.persistence.existingClaim }}
+        - name: dbdata
+          persistentVolumeClaim:
+            claimName: {{ tpl .Values.postgresdb.persistence.existingClaim $ }}
+        {{- else if and .Values.postgresdb.enabled (not .Values.postgresdb.persistence.enabled) }}  
+        - name: dbdata
+          emptyDir: {}
+        {{- end }}  
+        {{- if $shyamavol }}
+        - name: shyamavol
+          emptyDir: {}
+        {{- end }}  
+        {{- with .Values.mounts.volumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.postgresdb.mounts.volumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+  {{- if and .Values.postgresdb.enabled .Values.postgresdb.persistence.enabled (not .Values.postgresdb.persistence.existingClaim) }}
+  volumeClaimTemplates:
+    - metadata:
+        name: dbdata
+        {{- if .Values.postgresdb.persistence.annotations }}
+        annotations: {{- toYaml .Values.postgresdb.persistence.annotations | nindent 10 }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.postgresdb.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        {{- if .Values.postgresdb.persistence.dataSourceRef }}
+        dataSourceRef: {{- include "shyama.tplvalues" (dict "value" .Values.postgresdb.persistence.dataSourceRef "context" $) | nindent 10 }}
+        {{- else if .Values.postgresdb.persistence.dataSource }}
+        dataSource: {{- include "shyama.tplvalues" (dict "value" .Values.postgresdb.persistence.dataSource "context" $) | nindent 10 }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.postgresdb.persistence.size | quote }}
+        {{- if .Values.postgresdb.persistence.selector }}
+        selector: {{- include "shyama.tplvalues" (dict "value" .Values.postgresdb.persistence.selector "context" $) | nindent 10 }}
+        {{- end }}
+        {{- include "shyama.postgresdb.storage.class" (dict "persistence" .Values.postgresdb.persistence "global" .Values.global) | nindent 8 }}
+  {{- end }} 
+

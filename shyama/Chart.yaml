@@ -1,0 +1,20 @@
+apiVersion: v2
+version: 0.1.0
+appVersion: 0.1.0
+description: Provides Shyama - Gyeeta's Central Server component
+home: https://github.com/Gyeeta/helmcharts/tree/main/shyama
+icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+keywords:
+  - monitoring
+  - analytics
+  - alerting
+  - server
+maintainers:
+  - name: Gyeeta
+    url: https://github.com/Gyeeta/helmcharts
+name: shyama
+sources:
+  - https://github.com/Gyeeta/gyeeta
+home: https://gyeeta.io
+annotations:
+  category: Server

@@ -78,13 +78,13 @@ partha_config:
   # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
   shyama_ports: []
 
-  # Cloud Operator : Specify as either of aws, gcp, azure or on-prem
+  # Cloud Operator : Specify as either of aws, gcp, azure. Other clouds not yet supported. For on-prem, leave blank
   cloud_type: ""
 
-  # Region Name : Use if cloud_type is set as on-prem or to override the cloud region name
+  # Region Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud region name
   region_name: ""
 
-  # Zone Name : Use if cloud_type is set as on-prem or to override the cloud zone name
+  # Zone Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud zone name
   zone_name: ""
 
   # Percent of Responses to be analyzed with eBPF for Response Time Calculations

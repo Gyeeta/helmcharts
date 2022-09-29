@@ -1,0 +1,43 @@
+
+Chart Name: {{ include "shyama.name" . }}
+Chart Version: {{ .Chart.Version }}
+App Version: {{ .Chart.AppVersion }}
+
+
+Please be patient while the chart is being deployed...
+
+Shyama can be accessed via port {{ .Values.shyama_config.service.port }} on the following DNS name from within your cluster:
+
+    {{ include "shyama.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local 
+
+To get the shyama secret for use with madhava, nodewebserver and alertagent run :
+
+    kubectl get secret --namespace {{ .Release.Namespace }} {{ include "shyama.fullname" . }} -o jsonpath="{.data.CFG_SHYAMA_SECRET}" | base64 -d
+
+To connect to shyama from outside the cluster execute the following commands to get the Shyama IP and Port :
+
+{{- if contains "NodePort" .Values.shyama_config.service.type }}
+
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "shyama.fullname" . }})
+
+{{- else if contains "LoadBalancer" .Values.shyama_config.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "shyama.fullname" . }}'
+
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "shyama.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+
+{{- else if contains "ClusterIP" .Values.shyama_config.service.type }}
+
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ include "shyama.fullname" . }} {{ .Values.shyama_config.service.port }}:{{ .Values.shyama_config.service.port }} &
+
+{{- end }}
+
+{{- if and .Values.postgresdb.enabled (not .Values.postgresdb.persistence.enabled) }}
+#   
+#   WARNING: Persistence is disabled! You will lose your data when   
+#            the shyama pod is terminated.                           
+#
+{{- end }}
+
