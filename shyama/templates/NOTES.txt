@@ -6,9 +6,9 @@ App Version: {{ .Chart.AppVersion }}
 
 Please be patient while the chart is being deployed...
 
-Shyama can be accessed via port {{ .Values.shyama_config.service.port }} on the following DNS name from within your cluster:
+Shyama can be accessed on the following DNS name from within your cluster:
 
-    {{ include "shyama.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local 
+    {{ include "shyama.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local (and port {{ .Values.shyama_config.service.port }} )
 
 To get the shyama secret for use with madhava, nodewebserver and alertagent run :
 

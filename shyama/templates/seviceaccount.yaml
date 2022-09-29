@@ -11,8 +11,8 @@ metadata:
   annotations:
     {{ toYaml . | indent 4 }}
   {{- end }}
-  {{- if .Values.commonAnnotations }}
-    {{- include "shyama.tplvalues" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- if .Values.serviceAccount.annotations }}
+    {{- include "shyama.tplvalues" ( dict "value" .Values.serviceAccount.annotations "context" $ ) | nindent 4 }}
   {{- end }}
 automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
 {{- end }}
