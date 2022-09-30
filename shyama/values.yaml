@@ -346,7 +346,7 @@ shyama_config:
   #       "severity": "critical",
   #       "action": [
   #       {
-  #         "name": "page",
+  #         "name": "page"
   #       }
   #       ],
   #       "repeatafter": "0h",

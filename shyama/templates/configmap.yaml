@@ -11,14 +11,13 @@ metadata:
 {{- end }}
 data:
   {{- with .Values.shyama_config }}
-  shyama_main.json: |
+  shyama_main.json: |-
     {
       {{- if .shyama_name }}
       "shyama_name" : {{ include "shyama.tplvalues" (dict "value" .shyama_name "context" $) | quote }},
       {{- else }}  
       "shyama_name" : {{ printf "shyama_%s" ( $.Release.Name | replace "-" "_" ) | quote }},
       {{- end }}  
-      
       {{- if .cloud_type }}
       "cloud_type" : {{ .cloud_type | quote }},
       {{- end }}  
@@ -28,39 +27,35 @@ data:
       {{- if .zone_name }}
       "zone_name" : {{ .zone_name | quote }},
       {{- end }}  
-
       "min_madhava" : {{ default 1 .min_madhava | int }},
-    
       "listener_port" : {{ .service.port | int }},
       "service_hostname" : {{ printf "%s-headless.%s.svc.cluster.local" ( include "shyama.fullname" $ ) ( $.Release.Namespace ) | quote }},
       "service_port" : {{ .service.port | int }},
-
       {{- if .webserver_url }}
       "webserver_url" : {{ .webserver_url | quote }},
       {{- else }}
       "webserver_url" : {{ printf "http://%s.%s.svc.cluster.local:%d" ( default "nodewebserver" $.Values.global.webserver_name ) ( $.Release.Namespace ) ( default 10039 $.Values.global.webserver_port ) | quote }},
       {{- end }}
-
       "postgres_hostname" : {{ default "localhost" .db.postgres_hostname | quote }},
       "postgres_port" : {{ default 10040 .db.postgres_port | int }},
-      "postgres_user" : {{ default "postgres" .db.postgres_hostname | quote }},
-      "postgres_storage_days" : {{ default 3 .db.storage_days | int }},
+      "postgres_user" : {{ default "postgres" .db.postgres_user | quote }},
+      "postgres_storage_days" : {{ default 3 .db.storage_days | int }}
     }
   {{- if and .alertactions (typeIs "string" .alertactions) }}
-  alertactions.json: |
-    {{ fromJson .alertactions | mustToPrettyJson | indent 4 }} 
+  alertactions.json: |-
+{{ .alertactions | indent 4 }} 
   {{- end }}
   {{- if and .alertdefs (typeIs "string" .alertdefs) }}
-  alertdefs.json: |
-    {{ fromJson .alertdefs | mustToPrettyJson | indent 4 }} 
+  alertdefs.json: |-
+{{ .alertdefs | indent 4 }} 
   {{- end }}
   {{- if and .alertsilences (typeIs "string" .alertsilences) }}
-  alertsilences.json: |
-    {{ fromJson .alertsilences | mustToPrettyJson | indent 4 }} 
+  alertsilences.json: |-
+{{ .alertsilences | indent 4 }} 
   {{- end }}
   {{- if and .alertinhibits (typeIs "string" .alertinhibits) }}
-  alertinhibits.json: |
-    {{ fromJson .alertinhibits | mustToPrettyJson | indent 4 }} 
+  alertinhibits.json: |-
+{{ .alertinhibits | indent 4 }} 
   {{- end }}
   {{- end }}
 

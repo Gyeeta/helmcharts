@@ -133,7 +133,7 @@ spec:
           {{- end }}
             - name: "CFG_MAIN_JSON"
               value: "/etc/shyama/shyama_main.json"
-          {{- if and .alertactions (typeIs "string" .alertactions) }}
+          {{- if and .Values.shyama_config.alertactions (typeIs "string" .Values.shyama_config.alertactions) }}
             - name: "CFG_ACTIONS_JSON"
               value: "/etc/shyama/alertactions.json"
           {{- end }}
@@ -155,10 +155,10 @@ spec:
           {{- end }}
           envFrom:
             - secretRef:
-              name: {{ include "shyama.fullname" . }}
+                name: {{ include "shyama.fullname" . }}
             {{- if .Values.postgresdb.enabled }}
             - secretRef:
-              name: {{ include "shyama.postgresdb.fullname" . }}
+                name: {{ include "shyama.postgresdb.fullname" . }}
             {{- end }}  
           ports:
             - name: tcp-shyama
@@ -248,6 +248,9 @@ spec:
         - name: shyamavol
           emptyDir: {}
         {{- end }}  
+        - name: config-volume
+          configMap:
+            name: {{ include "shyama.fullname" . }}
         {{- with .Values.mounts.volumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
