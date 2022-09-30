@@ -33,7 +33,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
-        {{ - if .Values.postgresdb.enabled }}
+        {{- if .Values.postgresdb.enabled }}
         checksum/secret-postgresdb: {{ include (print $.Template.BasePath "/secret-postgresdb.yaml") . | sha256sum }}
         {{- end }}
         {{- with .Values.podAnnotations }}
@@ -132,24 +132,22 @@ spec:
               value: {{- include "shyama.tplvalues" (dict "value" .Values.shyama_config.db.postgres_password "context" $) | quote }}
           {{- end }}
             - name: "CFG_MAIN_JSON"
-              value: "/etc/shyama/shyama_main.json
-          {{- with .Values.shyama_config }}
+              value: "/etc/shyama/shyama_main.json"
           {{- if and .alertactions (typeIs "string" .alertactions) }}
             - name: "CFG_ACTIONS_JSON"
               value: "/etc/shyama/alertactions.json"
           {{- end }}
-          {{- if and .alertdefs (typeIs "string" .alertdefs) }}
+          {{- if and .Values.shyama_config.alertdefs (typeIs "string" .Values.shyama_config.alertdefs) }}
             - name: "CFG_ALERTDEFS_JSON"
               value: "/etc/shyama/alertdefs.json"
           {{- end }}
-          {{- if and .alertsilences (typeIs "string" .alertsilences) }}
+          {{- if and .Values.shyama_config.alertsilences (typeIs "string" .Values.shyama_config.alertsilences) }}
             - name: "CFG_SILENCES_JSON"
               value: "/etc/shyama/alertsilences.json"
           {{- end }}
-          {{- if and .alertinhibits (typeIs "string" .alertinhibits) }}
+          {{- if and .Values.shyama_config.alertinhibits (typeIs "string" .Values.shyama_config.alertinhibits) }}
             - name: "CFG_INHIBITS_JSON"
               value: "/etc/shyama/alertinhibits.json"
-          {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.extra.env }}
             - name: "{{ $key }}"
@@ -238,7 +236,7 @@ spec:
           {{- end }}
       {{- end }}
       volumes:
-        {{- if and .Values.postgresdb.enabled .Values.postgresdb.persistence.enabled .Values.persistence.existingClaim }}
+        {{- if and .Values.postgresdb.enabled .Values.postgresdb.persistence.enabled .Values.postgresdb.persistence.existingClaim }}
         - name: dbdata
           persistentVolumeClaim:
             claimName: {{ tpl .Values.postgresdb.persistence.existingClaim $ }}

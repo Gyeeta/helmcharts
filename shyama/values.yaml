@@ -92,6 +92,9 @@ readinessEnabled: true
 # Enable PodSecurityPolicy (only for K8s versions < 1.25)
 podSecurityPolicy: false
 
+# Global parameters for subcharts
+global: {}
+
 mounts:
   # A list of extra volumes you want to add to shyama container
   volumes: []

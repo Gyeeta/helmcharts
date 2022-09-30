@@ -4,7 +4,7 @@
 {{- end }}
 
 {{- define "shyama.postgresdb.fullname" -}}
-{{- printf "%s-postgresdb" ( {{ include "shyama.fullname" }} ) | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-postgresdb" ( include "shyama.fullname" . ) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -12,7 +12,7 @@ Common postgresdb labels
 */}}
 {{- define "shyama.postgresdb.labels" -}}
 helm.sh/chart: {{ include "shyama.chart" . }}
-{{ include "shyama.postgresdb.selectorLabels" . }}
+{{ include "shyama.selectorLabels" . }}
 app.kubernetes.io/version: {{ .Values.postgresdb.image.tag | default "12.2.0" }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/component: database
@@ -22,7 +22,7 @@ app.kubernetes.io/part-of: gyeeta
 {{/*
 Selector labels
 */}}
-{{- define "shyama.selectorLabels" -}}
+{{- define "shyama.postgresdb.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "shyama.postgresdb.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

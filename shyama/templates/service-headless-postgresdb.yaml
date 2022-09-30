@@ -21,4 +21,4 @@ spec:
       targetPort: 10040
   selector:
     {{- include "shyama.postgresdb.selectorLabels" . | nindent 4 }}
-{{-end }} 
+{{- end }} 
