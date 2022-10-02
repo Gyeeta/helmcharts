@@ -13,11 +13,6 @@ data:
   {{- with .Values.madhava_config }}
   madhava_main.json: |-
     {
-      {{- if .madhava_name }}
-      "madhava_name" : {{ include "madhava.tplvalues" (dict "value" .madhava_name "context" $) | quote }},
-      {{- else }}  
-      "madhava_name" : {{ printf "madhava_%s" ( $.Release.Name | replace "-" "_" ) | quote }},
-      {{- end }}  
       "shyama_hosts" : {{ mustToJson .shyama_hosts }},
       "shyama_ports" : {{ mustToJson .shyama_ports }},
       {{- if .cloud_type }}
@@ -30,7 +25,6 @@ data:
       "zone_name" : {{ .zone_name | quote }},
       {{- end }}  
       "listener_port" : {{ .service.port | int }},
-      "service_hostname" : {{ printf "%s-headless.%s.svc.%s" ( include "madhava.fullname" $ ) ( $.Release.Namespace ) ( $.Values.clusterDomain ) | quote }},
       "service_port" : {{ .service.port | int }},
       "postgres_hostname" : {{ default "localhost" .db.postgres_hostname | quote }},
       "postgres_port" : {{ default 10040 .db.postgres_port | int }},

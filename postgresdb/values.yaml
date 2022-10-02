@@ -152,9 +152,8 @@ persistence:
   # Name of an existing PVC to use
   existingClaim: ""
 
-  # PVC Storage Class for PostgreSQL data volume (Use only for Cloud installs)
-  # If set to "-", disables dynamic provisioning
-  # If undefined (the default) or set to null, the default provisioner is used.  (gp2 on AWS, standard on GKE, AWS & OpenStack)
+  # PVC Storage Class for PostgreSQL data volume. If set to "-", disables dynamic provisioning.  
+  # If undefined or empty, the default provisioner is used. (gp2 on AWS, standard on GKE, AWS & OpenStack)
   storageClass: ""
 
   # PVC Access Mode for PostgreSQL volume

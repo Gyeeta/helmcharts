@@ -5,6 +5,15 @@
   {{- end -}} 
 {{- end -}}
 
+{{- $madhava_name_prefix := "" -}}
+{{- if .Values.madhava_config.madhava_name -}}
+  {{- $madhava_name_prefix := ( ( include "madhava.tplvalues" (dict "value" .Values.madhava_config.madhava_name "context" $) ) | replace "-" "_" | trunc 40 ) -}}
+{{- else -}}  
+  {{- $madhava_name_prefix := ( printf "madhava_%s" $.Release.Name | replace "-" "_" | trunc 40 ) -}}
+{{- end -}}  
+
+{{- $service_hostname_prefix := ( printf "%s-headless.%s.svc.%s" ( include "madhava.fullname" $ ) ( $.Release.Namespace ) ( $.Values.clusterDomain ) ) -}}
+
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -122,6 +131,8 @@ spec:
             readOnlyRootFilesystem: true 
           args:
             - start
+            - --cfg_service_hostname
+            - $(GY_POD_NAME).{{ $service_hostname_prefix }}
             {{- if not .Values.madhava_config.logtofile }}
             - --nolog
             {{- end }}
@@ -129,11 +140,17 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
           env:
+            - name: GY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: GY_SET_MADHAVA_NAME
+              value: {{ $madhava_name_prefix | quote }}
           {{- if and ( not .Values.postgresdb.enabled ) .Values.madhava_config.db.external_postgres_password }}
-            - name: "CFG_POSTGRES_PASSWORD"
+            - name: CFG_POSTGRES_PASSWORD
               value: {{- include "madhava.tplvalues" (dict "value" .Values.madhava_config.db.external_postgres_password "context" $) | quote }}
           {{- end }}
-            - name: "CFG_MAIN_JSON"
+            - name: CFG_MAIN_JSON
               value: "/etc/madhava/madhava_main.json"
           {{- range $key, $value := .Values.extra.env }}
             - name: "{{ $key }}"
