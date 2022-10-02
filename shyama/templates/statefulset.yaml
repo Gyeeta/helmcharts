@@ -1,7 +1,7 @@
 {{- $shyamavol := true -}}
 {{- range .Values.mounts.volumeMounts }}
   {{- if or (eq .mountPath "/hostdata") (eq .mountPath "/hostdata/") -}}
-    {{- $shyamavol := false -}}
+    {{- $shyamavol = false -}}
   {{- end -}} 
 {{- end -}}
 

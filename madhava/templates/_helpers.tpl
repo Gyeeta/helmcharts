@@ -166,6 +166,7 @@ Compile all warnings into a single message, and call fail.
 */}}
 {{- define "madhava.validateValues" -}}
 {{- $messages := list -}}
+{{- $messages := append $messages (include "madhava.validateValues.shyamasecret" .) -}}
 {{- $messages := append $messages (include "madhava.validateValues.shyamahosts" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
@@ -175,6 +176,19 @@ Compile all warnings into a single message, and call fail.
 {{- end -}}
 {{- end -}}
 
+
+{{/*
+Validate to check if either of shyama_secret or shyama_existing_secretname is set
+*/}}
+{{- define "madhava.validateValues.shyamasecret" -}}
+{{- if and (empty .Values.madhava_config.shyama_secret) (empty .Values.madhava_config.shyama_existing_secretname) }}
+madhava: madhava_config.shyama_secret, madhava_config.shyama_existing_secretname
+    Missing Shyama Secret. Please set either the madhava_config.shyama_secret field or
+    if an existing Shyama secret is already in the same namespace, set the Kubernetes Secret name to
+    madhava_config.shyama_existing_secretname field.
+    Please refer to https://gyeeta.io/docs/installation/madhava_config
+{{- end -}}
+{{- end -}}
 
 {{/*
 Validate values of madhava_config.shyama_hosts and madhava_config.shyama_ports

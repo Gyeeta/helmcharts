@@ -1,15 +1,15 @@
 {{- $madhavavol := true -}}
 {{- range .Values.mounts.volumeMounts }}
   {{- if or (eq .mountPath "/hostdata") (eq .mountPath "/hostdata/") -}}
-    {{- $madhavavol := false -}}
+    {{- $madhavavol = false -}}
   {{- end -}} 
 {{- end -}}
 
 {{- $madhava_name_prefix := "" -}}
 {{- if .Values.madhava_config.madhava_name -}}
-  {{- $madhava_name_prefix := ( ( include "madhava.tplvalues" (dict "value" .Values.madhava_config.madhava_name "context" $) ) | replace "-" "_" | trunc 40 ) -}}
+  {{- $madhava_name_prefix = ( ( include "madhava.tplvalues" (dict "value" .Values.madhava_config.madhava_name "context" $) ) | replace "-" "_" | trunc 40 ) -}}
 {{- else -}}  
-  {{- $madhava_name_prefix := ( printf "madhava_%s" $.Release.Name | replace "-" "_" | trunc 40 ) -}}
+  {{- $madhava_name_prefix = ( printf "madhava_%s" $.Release.Name | replace "-" "_" | trunc 40 ) -}}
 {{- end -}}  
 
 {{- $service_hostname_prefix := ( printf "%s-headless.%s.svc.%s" ( include "madhava.fullname" $ ) ( $.Release.Namespace ) ( $.Values.clusterDomain ) ) -}}
@@ -146,12 +146,21 @@ spec:
                   fieldPath: metadata.name
             - name: GY_SET_MADHAVA_NAME
               value: {{ $madhava_name_prefix | quote }}
-          {{- if and ( not .Values.postgresdb.enabled ) .Values.madhava_config.db.external_postgres_password }}
+            {{- if and ( not .Values.postgresdb.enabled ) .Values.madhava_config.db.external_postgres_password }}
             - name: CFG_POSTGRES_PASSWORD
               value: {{- include "madhava.tplvalues" (dict "value" .Values.madhava_config.db.external_postgres_password "context" $) | quote }}
-          {{- end }}
+            {{- end }}
             - name: CFG_MAIN_JSON
               value: "/etc/madhava/madhava_main.json"
+            - name: CFG_SHYAMA_SECRET
+            {{- if .Values.madhava_config.shyama_secret }}
+              value: {{ .Values.madhava_config.shyama_secret | quote }}
+            {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "madhava.tplvalues" (dict "value" .Values.madhava_config.shyama_existing_secretname "context" $) | quote }}
+                  key: "CFG_SHYAMA_SECRET"
+            {{- end }}
           {{- range $key, $value := .Values.extra.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
