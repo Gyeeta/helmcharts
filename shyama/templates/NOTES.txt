@@ -8,7 +8,7 @@ Please be patient while the chart is being deployed...
 
 Shyama can be accessed on the following DNS name from within your cluster:
 
-    {{ include "shyama.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local (and port {{ .Values.shyama_config.service.port }} )
+    {{ include "shyama.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} ( port {{ .Values.shyama_config.service.port }} )
 
 To get the shyama secret for use with madhava, nodewebserver and alertagent run :
 
@@ -40,4 +40,9 @@ To connect to shyama from outside the cluster execute the following commands to 
 #            the shyama pod is terminated.                           
 #
 {{- end }}
+
+For further documentation on Gyeeta, please refer to :
+
+https://gyeeta.io/docs
+
 

@@ -29,16 +29,20 @@ data:
       {{- end }}  
       "min_madhava" : {{ default 1 .min_madhava | int }},
       "listener_port" : {{ .service.port | int }},
-      "service_hostname" : {{ printf "%s-headless.%s.svc.cluster.local" ( include "shyama.fullname" $ ) ( $.Release.Namespace ) | quote }},
+      "service_hostname" : {{ printf "%s-headless.%s.svc.%s" ( include "shyama.fullname" $ ) ( $.Release.Namespace ) ( $.Values.clusterDomain ) | quote }},
       "service_port" : {{ .service.port | int }},
       {{- if .webserver_url }}
       "webserver_url" : {{ .webserver_url | quote }},
       {{- else }}
-      "webserver_url" : {{ printf "http://%s.%s.svc.cluster.local:%d" ( default "nodewebserver" $.Values.global.webserver_name ) ( $.Release.Namespace ) ( default 10039 $.Values.global.webserver_port ) | quote }},
+      "webserver_url" : {{ printf "http://%s.%s.svc.%s:%d" ( default "nodewebserver" $.Values.global.webserver_name ) ( $.Release.Namespace ) ( default 10039 $.Values.global.webserver_port ) ( $.Values.clusterDomain ) | quote }},
       {{- end }}
       "postgres_hostname" : {{ default "localhost" .db.postgres_hostname | quote }},
       "postgres_port" : {{ default 10040 .db.postgres_port | int }},
-      "postgres_user" : {{ default "postgres" .db.postgres_user | quote }},
+      {{- if $.Values.postgresdb.enabled }}
+      "postgres_user" : "postgres",
+      {{- else }}
+      "postgres_user" : {{ default "postgres" .db.external_postgres_user | quote }},
+      {{- end }}
       "postgres_storage_days" : {{ default 3 .db.storage_days | int }}
     }
   {{- if and .alertactions (typeIs "string" .alertactions) }}

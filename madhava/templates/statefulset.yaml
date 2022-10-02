@@ -1,38 +1,37 @@
-{{- $shyamavol := true -}}
+{{- $madhavavol := true -}}
 {{- range .Values.mounts.volumeMounts }}
   {{- if or (eq .mountPath "/hostdata") (eq .mountPath "/hostdata/") -}}
-    {{- $shyamavol := false -}}
+    {{- $madhavavol := false -}}
   {{- end -}} 
 {{- end -}}
 
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "shyama.fullname" . }}
+  name: {{ include "madhava.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    {{- include "shyama.labels" . | nindent 4 }}
+    {{- include "madhava.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "shyama.selectorLabels" . | nindent 6 }}
-  serviceName: {{ include "shyama.fullname" . }}-headless
-  replicas: 1
+      {{- include "madhava.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "madhava.fullname" . }}-headless
+  replicas: {{ .Values.replicaCount }}
   minReadySeconds: 10
   {{- if .Values.updateStrategy }}
   updateStrategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
   {{- end }}
   template:
     metadata:
-      name: {{ include "shyama.fullname" . }}
+      name: {{ include "madhava.fullname" . }}
       labels:
-        {{- include "shyama.selectorLabels" . | nindent 8 }}
+        {{- include "madhava.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- if .Values.postgresdb.enabled }}
         checksum/secret-postgresdb: {{ include (print $.Template.BasePath "/secret-postgresdb.yaml") . | sha256sum }}
         {{- end }}
@@ -41,24 +40,24 @@ spec:
         {{- end }}
     spec:          
       {{- if .Values.hostAliases }}
-      hostAliases: {{- include "shyama.tplvalues" (dict "value" .Values.hostAliases "context" $) | nindent 8 }}
+      hostAliases: {{- include "madhava.tplvalues" (dict "value" .Values.hostAliases "context" $) | nindent 8 }}
       {{- end }}
       {{- if .Values.affinity }}
-      affinity: {{- include "shyama.tplvalues" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      affinity: {{- include "madhava.tplvalues" (dict "value" .Values.affinity "context" $) | nindent 8 }}
       {{- else }}
       affinity:
-        podAffinity: {{- include "shyama.affinities.pods" (dict "type" .Values.podAffinityPreset "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "shyama.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "context" $) | nindent 10 }}
-        nodeAffinity: {{- include "shyama.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
+        podAffinity: {{- include "madhava.affinities.pods" (dict "type" .Values.podAffinityPreset "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "madhava.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "madhava.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
       {{- end }}
       {{- if .Values.nodeSelector }}
-      nodeSelector: {{- include "shyama.tplvalues" (dict "value" .Values.nodeSelector "context" $) | nindent 8 }}
+      nodeSelector: {{- include "madhava.tplvalues" (dict "value" .Values.nodeSelector "context" $) | nindent 8 }}
       {{- end }}
       {{- if .Values.tolerations }}
-      tolerations: {{- include "shyama.tplvalues" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
+      tolerations: {{- include "madhava.tplvalues" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
       {{- end }}
       {{- if .Values.topologySpreadConstraints }}
-      topologySpreadConstraints: {{- include "shyama.tplvalues" (dict "value" .Values.topologySpreadConstraints "context" .) | nindent 8 }}
+      topologySpreadConstraints: {{- include "madhava.tplvalues" (dict "value" .Values.topologySpreadConstraints "context" .) | nindent 8 }}
       {{- end }}
       {{- if .Values.podPriorityClassName }}
       priorityClassName: {{ .Values.podPriorityClassName }}
@@ -82,7 +81,7 @@ spec:
       {{- end }}
       {{- if .Values.postgresdb.enabled }}
         - name: init-postgres
-          image: {{ include "shyama.postgresdb.image" . }}
+          image: {{ include "madhava.postgresdb.image" . }}
           imagePullPolicy: {{ .Values.postgresdb.image.pullPolicy }}
           resources: {{- toYaml .Values.postgresdb.resources | nindent 12 }}
           securityContext:
@@ -92,7 +91,7 @@ spec:
             - name: CFG_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "shyama.postgresdb.fullname" . }}
+                  name: {{ include "madhava.postgresdb.fullname" . }}
                   key: "CFG_POSTGRES_PASSWORD"
             - name: CFG_POSTGRES_PORT
               value: {{ .Values.postgresdb.postgresdb_config.service.port | quote }}
@@ -113,8 +112,8 @@ spec:
             {{- end }}              
       {{- end }}
       containers:
-        - name: shyama
-          image: {{ include "shyama.image" . }}
+        - name: madhava
+          image: {{ include "madhava.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
@@ -123,55 +122,37 @@ spec:
             readOnlyRootFilesystem: true 
           args:
             - start
-            {{- if not .Values.shyama_config.logtofile }}
+            {{- if not .Values.madhava_config.logtofile }}
             - --nolog
             {{- end }}
             {{- with .Values.extra.args }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
           env:
-          {{- if and ( not .Values.postgresdb.enabled ) .Values.shyama_config.db.external_postgres_password }}
+          {{- if and ( not .Values.postgresdb.enabled ) .Values.madhava_config.db.external_postgres_password }}
             - name: "CFG_POSTGRES_PASSWORD"
-              value: {{- include "shyama.tplvalues" (dict "value" .Values.shyama_config.db.external_postgres_password "context" $) | quote }}
+              value: {{- include "madhava.tplvalues" (dict "value" .Values.madhava_config.db.external_postgres_password "context" $) | quote }}
           {{- end }}
             - name: "CFG_MAIN_JSON"
-              value: "/etc/shyama/shyama_main.json"
-          {{- if and .Values.shyama_config.alertactions (typeIs "string" .Values.shyama_config.alertactions) }}
-            - name: "CFG_ACTIONS_JSON"
-              value: "/etc/shyama/alertactions.json"
-          {{- end }}
-          {{- if and .Values.shyama_config.alertdefs (typeIs "string" .Values.shyama_config.alertdefs) }}
-            - name: "CFG_ALERTDEFS_JSON"
-              value: "/etc/shyama/alertdefs.json"
-          {{- end }}
-          {{- if and .Values.shyama_config.alertsilences (typeIs "string" .Values.shyama_config.alertsilences) }}
-            - name: "CFG_SILENCES_JSON"
-              value: "/etc/shyama/alertsilences.json"
-          {{- end }}
-          {{- if and .Values.shyama_config.alertinhibits (typeIs "string" .Values.shyama_config.alertinhibits) }}
-            - name: "CFG_INHIBITS_JSON"
-              value: "/etc/shyama/alertinhibits.json"
-          {{- end }}
+              value: "/etc/madhava/madhava_main.json"
           {{- range $key, $value := .Values.extra.env }}
             - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
+          {{- if .Values.postgresdb.enabled }}
           envFrom:
             - secretRef:
-                name: {{ include "shyama.fullname" . }}
-            {{- if .Values.postgresdb.enabled }}
-            - secretRef:
-                name: {{ include "shyama.postgresdb.fullname" . }}
-            {{- end }}  
+                name: {{ include "madhava.postgresdb.fullname" . }}
+          {{- end }}  
           ports:
-            - name: tcp-shyama
-              containerPort: {{ .Values.shyama_config.service.port }}
+            - name: tcp-madhava
+              containerPort: {{ .Values.madhava_config.service.port }}
           volumeMounts:
           - name: config-volume
-            mountPath: /etc/shyama         
-          {{- if $shyamavol }}
+            mountPath: /etc/madhava         
+          {{- if $madhavavol }}
           - mountPath: /hostdata
-            name: shyamavol
+            name: madhavavol
           {{- end }}  
           {{- with .Values.mounts.volumeMounts }}
              {{- toYaml . | nindent 10 }}
@@ -183,16 +164,16 @@ spec:
             successThreshold: 1
             failureThreshold: 6
             tcpSocket:
-              port: {{ .Values.shyama_config.service.port }}
+              port: {{ .Values.madhava_config.service.port }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
           {{- if .Values.lifecycleHooks }}
-          lifecycle: {{- include "shyama.tplvalues" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
+          lifecycle: {{- include "madhava.tplvalues" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
           {{- end }}
       {{- if .Values.postgresdb.enabled }}
         - name: postgresdb
-          image: {{ include "shyama.postgresdb.image" . }}
+          image: {{ include "madhava.postgresdb.image" . }}
           imagePullPolicy: {{ .Values.postgresdb.image.pullPolicy }}
           resources: {{- toYaml .Values.postgresdb.resources | nindent 12 }}
           securityContext:
@@ -235,7 +216,7 @@ spec:
           resources: {{- toYaml .Values.postgresdb.resources | nindent 12 }}
           {{- end }}
           {{- if .Values.postgresdb.lifecycleHooks }}
-          lifecycle: {{- include "shyama.tplvalues" (dict "value" .Values.postgresdb.lifecycleHooks "context" $) | nindent 12 }}
+          lifecycle: {{- include "madhava.tplvalues" (dict "value" .Values.postgresdb.lifecycleHooks "context" $) | nindent 12 }}
           {{- end }}
       {{- end }}
       volumes:
@@ -247,13 +228,13 @@ spec:
         - name: dbdata
           emptyDir: {}
         {{- end }}  
-        {{- if $shyamavol }}
-        - name: shyamavol
+        {{- if $madhavavol }}
+        - name: madhavavol
           emptyDir: {}
         {{- end }}  
         - name: config-volume
           configMap:
-            name: {{ include "shyama.fullname" . }}
+            name: {{ include "madhava.fullname" . }}
         {{- with .Values.mounts.volumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -273,16 +254,16 @@ spec:
           - {{ . | quote }}
         {{- end }}
         {{- if .Values.postgresdb.persistence.dataSourceRef }}
-        dataSourceRef: {{- include "shyama.tplvalues" (dict "value" .Values.postgresdb.persistence.dataSourceRef "context" $) | nindent 10 }}
+        dataSourceRef: {{- include "madhava.tplvalues" (dict "value" .Values.postgresdb.persistence.dataSourceRef "context" $) | nindent 10 }}
         {{- else if .Values.postgresdb.persistence.dataSource }}
-        dataSource: {{- include "shyama.tplvalues" (dict "value" .Values.postgresdb.persistence.dataSource "context" $) | nindent 10 }}
+        dataSource: {{- include "madhava.tplvalues" (dict "value" .Values.postgresdb.persistence.dataSource "context" $) | nindent 10 }}
         {{- end }}
         resources:
           requests:
             storage: {{ .Values.postgresdb.persistence.size | quote }}
         {{- if .Values.postgresdb.persistence.selector }}
-        selector: {{- include "shyama.tplvalues" (dict "value" .Values.postgresdb.persistence.selector "context" $) | nindent 10 }}
+        selector: {{- include "madhava.tplvalues" (dict "value" .Values.postgresdb.persistence.selector "context" $) | nindent 10 }}
         {{- end }}
-        {{- include "shyama.postgresdb.storage.class" (dict "persistence" .Values.postgresdb.persistence "global" .Values.global) | nindent 8 }}
+        {{- include "madhava.postgresdb.storage.class" (dict "persistence" .Values.postgresdb.persistence "global" .Values.global) | nindent 8 }}
   {{- end }} 
 

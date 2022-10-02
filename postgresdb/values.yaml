@@ -17,6 +17,9 @@ nameOverride: ""
 # Same as nameOverride but for the fullname.
 fullnameOverride: ""
 
+# Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
 # PostgreSQL pods host aliases
 # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
 hostAliases: []

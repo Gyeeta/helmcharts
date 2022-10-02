@@ -1,7 +1,7 @@
 {{- define "partha.podDefinition" -}}
 {{- $parthavol := true -}}
 {{- range .Values.mounts.volumeMounts }}
-  {{- if eq .mountPath "/hostdata" -}}
+  {{- if or (eq .mountPath "/hostdata") (eq .mountPath "/hostdata/") -}}
     {{- $parthavol := false -}}
   {{- end -}} 
 {{- end -}}

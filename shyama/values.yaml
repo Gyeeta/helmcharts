@@ -17,6 +17,9 @@ nameOverride: ""
 # Same as nameOverride but for the fullname.
 fullnameOverride: ""
 
+# Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
 # Shyama pods host aliases
 # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
 hostAliases: []
@@ -138,6 +141,9 @@ shyama_config:
   # http://nodewebserver.<namespace>.svc.cluster.local:10039 if not specified
   webserver_url: ""
 
+  # Debug and Process Log to file instead of stdout/stderr. If true will use the emptyDir mount point for logging to log/shyama.log
+  logtofile: true
+
   # Shyama DB (postgres) Config
   db:
     # If postgres.enabled is true, then specify as localhost
@@ -145,11 +151,11 @@ shyama_config:
     
     postgres_port: 10040
 
-    # Specify only if external postgres DB to be used
-    postgres_user: postgres
+    # Specify only if external postgres DB to be used (`postgresdb.enabled` is false)
+    external_postgres_user: ""
 
-    # Specify only if external postgres DB to be used
-    postgres_password: ""
+    # Specify only if external postgres DB to be used (`postgresdb.enabled` is false)
+    external_postgres_password: ""
 
     # Number of days of data storage in DB (max 60) 
     storage_days: 3
@@ -392,9 +398,9 @@ shyama_config:
   #   ]  
 
 
-#################################
-# Values for Gyeeta PostgreSQL DB
-#################################
+##########################################
+# Values for Shyama Postgres DB container
+##########################################
 postgresdb:
   
   # Enable Shyama specific Postgres DB. If false, an external Postgres must be specified in the shyama config
@@ -443,7 +449,7 @@ postgresdb:
   # postgresdb config  
   #
   postgresdb_config:
-    # postgres user password
+    # postgres user password. If empty, will be auto-generated
     password: ""
 
     service:

@@ -1,0 +1,46 @@
+
+Chart Name: {{ include "madhava.name" . }}
+Chart Version: {{ .Chart.Version }}
+App Version: {{ .Chart.AppVersion }}
+
+
+Please be patient while the chart is being deployed...
+
+Madhava can be accessed on the following DNS name from within your cluster:
+
+    {{ include "madhava.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} ( port {{ .Values.madhava_config.service.port }} )
+
+To connect to madhava from outside the cluster execute the following commands to get the madhava IP and Port :
+
+{{- if contains "NodePort" .Values.madhava_config.service.type }}
+
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "madhava.fullname" . }})
+
+{{- else if contains "LoadBalancer" .Values.madhava_config.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "madhava.fullname" . }}'
+
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "madhava.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+
+{{- else if contains "ClusterIP" .Values.madhava_config.service.type }}
+
+    kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ include "madhava.fullname" . }} {{ .Values.madhava_config.service.port }}:{{ .Values.madhava_config.service.port }} &
+
+{{- end }}
+
+{{- if and .Values.postgresdb.enabled (not .Values.postgresdb.persistence.enabled) }}
+#   
+#   WARNING: Persistence is disabled! You will lose your data when   
+#            the madhava pod is terminated.                           
+#
+{{- end }}
+
+For further documentation on Gyeeta, please refer to :
+
+https://gyeeta.io/docs
+
+
+{{ include "madhava.validateValues" . }}
+

@@ -1,0 +1,325 @@
+
+# Default values for Gyeeta Madhava server and Postgres DB :
+
+image:
+  registry: ghcr.io
+  repository: gyeeta/madhava
+  # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Secrets containing credentials when pulling from private/secure registries.
+imagePullSecrets: []
+
+# Set a new name if you want to override the release name used
+nameOverride: ""
+
+# Same as nameOverride but for the fullname.
+fullnameOverride: ""
+
+# Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
+# madhava pods host aliases
+# https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+hostAliases: []
+
+# Add additional pod annotations
+podAnnotations: {}
+
+# Add additional pod labels
+podLabels: {}
+
+# Set pod priorityClassName
+podPriorityClassName: ""
+
+# Affinity constraint for pod scheduling
+# Note: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+affinity: {}
+
+# Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+# ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+podAffinityPreset: ""
+
+# Pod anti-affinity preset. Ignored if `primary.affinity` is set. Allowed values: `soft` or `hard`
+podAntiAffinityPreset: soft
+
+# Node affinity preset
+nodeAffinityPreset:
+  # Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  type: ""
+
+  # Node label key to match Ignored if `affinity` is set.
+  # E.g.
+  # key: "kubernetes.io/e2e-az-name"
+  #
+  key: ""
+
+  # Node label values to match. Ignored if `affinity` is set.
+  # E.g.
+  # values:
+  #   - e2e-az1
+  #   - e2e-az2
+  #
+  values: []
+
+resources:
+  requests: {}
+  #  cpu: 250m
+  #  memory: 250Mi
+  limits: {}
+  #  cpu: 5000m
+  #  memory: 64Gi
+
+# Selectors used to deploy on a given nodes
+nodeSelector: {}
+
+# Tolerations for pods assignment
+tolerations: []
+
+# Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template
+# Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
+topologySpreadConstraints: []
+
+# Automate configuration before or after startup
+lifecycleHooks: {}
+
+updateStrategy:
+  # -- Perform rolling updates by default
+  type: RollingUpdate
+  rollingUpdate: {}
+
+# readinessProbe 
+readinessEnabled: true
+
+# Enable PodSecurityPolicy (only for K8s versions < 1.25)
+podSecurityPolicy: false
+
+# Global parameters for subcharts
+global: {}
+
+mounts:
+  # A list of extra volumes you want to add to madhava container
+  volumes: []
+  # A list of extra volumes you want to add to madhava container
+  volumeMounts: []
+
+extra:
+  # -- Extra environment variables that will be pass onto madhava container
+  env: {}
+  # -- Extra command-line arguments
+  args: []
+
+
+# Number of madhava replicas. This number needs to be based on max Hosts to be monitored / 200
+# If madhava is nstalled on nodes with little resources (< 4 CPU or < 8 GB RAM), more replicas will be required
+# Default 2 replicas
+replicaCount: 2
+
+#
+# madhava config  
+#
+madhava_config:
+
+  # Name of madhava instance : Name must start with keyword madhava : If not specified, auto-generated. 
+  # Each replica of madhava will have its name as madhava_name_<replica number> e.g. madhava_name_0
+  # Postgres DB will be created based on this name... 
+  madhava_name: ""
+
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  shyama_hosts: []
+
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  shyama_ports: []
+
+  # Shyama secret password string to be used by Madhava servers and Web servers to authenticate. Please specify either
+  # shyama_secret or external secret shyama_existing_secretname. If shyama_secret is empty, shyama_existing_secretname will become mandatory.
+  shyama_secret: ""
+
+  # See comment for shyama_secret. Specify only if shyama_secret is empty. The existing secret must be in same namespace.
+  shyama_existing_secretname: ""
+
+  # Cloud Operator : Specify as either of aws, gcp, azure. Other clouds not yet supported. For on-prem, leave blank
+  cloud_type: ""
+
+  # Region Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud region name
+  region_name: ""
+
+  # Zone Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud zone name
+  zone_name: ""
+
+  # Debug and Process Log to file instead of stdout/stderr. If true will use the emptyDir mount point for logging to log/madhava.log
+  logtofile: true
+
+  # Madhava DB (postgres) Config
+  db:
+    # If postgres.enabled is true, then specify as localhost
+    postgres_hostname: "localhost"
+    
+    postgres_port: 10040
+
+    # Specify only if external postgres DB to be used (`postgresdb.enabled` is false)
+    external_postgres_user: ""
+
+    # Specify only if external postgres DB to be used (`postgresdb.enabled` is false)
+    external_postgres_password: ""
+
+    # Number of days of data storage in DB (max 60) 
+    storage_days: 3
+
+  # Madhava service config
+  service:
+
+    # Madhava Service type (Specify either ClusterIP or NodePort)
+    type: ClusterIP
+
+    # Madhava service port
+    port: 10038
+
+    # Specify if type set to NodePort. Choose port between <30000-32767>
+    # ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    nodePort: ""
+
+    # Static clusterIP or None for headless services
+    clusterIP: ""
+
+    # Service Annotations 
+    annotations: {}
+
+    # Load balancer IP if service type is `LoadBalancer`
+    # Set the LoadBalancer service type to internal only
+    loadBalancerIP: ""
+
+    # Enable client source IP preservation for type set to LoadBalancer or NodePort
+    # ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    externalTrafficPolicy: Cluster
+
+    # Addresses that are allowed when service is LoadBalancer
+    # loadBalancerSourceRanges:
+    # - 10.10.10.0/24
+    loadBalancerSourceRanges: []
+
+
+##########################################
+# Values for Madhava Postgres DB container
+##########################################
+postgresdb:
+  
+  # Enable Madhava specific Postgres DB. If false, an external Postgres must be specified in the madhava config
+  enabled: true
+
+  image:
+    registry: ghcr.io
+    repository: gyeeta/postgresdb
+    tag: "12.2.0"
+    pullPolicy: IfNotPresent
+
+  # Secrets containing credentials when pulling from private/secure registries.
+  imagePullSecrets: []
+
+  resources:
+    requests: {}
+    #  cpu: 250m
+    #  memory: 150Mi
+    limits: {}
+    #  cpu: 4000m
+    #  memory: 64Gi
+
+  # Automate configuration before or after startup
+  lifecycleHooks: {}
+
+  # livenessProbe 
+  livenessEnabled: true
+
+  mounts:
+    # A list of extra volumes you want to add to postgresdb container
+    volumes: []
+    # A list of extra volumes you want to add to postgresdb container
+    volumeMounts: []
+
+  extra:
+    # -- Extra environment variables that will be pass onto postgresdb container
+    env: {}
+    # -- Extra command-line arguments
+    args: []
+    # -- Extra environment variables that will be pass onto postgresdb init db container
+    envinit: {}
+    # -- Extra command-line arguments for postgresdb init container
+    argsinit: []
+
+  #
+  # postgresdb config  
+  #
+  postgresdb_config:
+    # postgres user password
+    password: ""
+
+    service:
+      port: 10040
+
+
+  persistence:
+    # persistence.enabled PostgreSQL data persistence using PVC. If false, will use emptyDir (delete on pod termination) instead
+    enabled: true
+
+    # Name of an existing PVC to use
+    existingClaim: ""
+
+    # PVC Storage Class for PostgreSQL data volume (Use only for Cloud installs)
+    # If set to "-", disables dynamic provisioning
+    # If undefined (the default) or set to null, the default provisioner is used.  (gp2 on AWS, standard on GKE, AWS & OpenStack)
+    storageClass: ""
+
+    # PVC Access Mode for PostgreSQL volume
+    accessModes:
+      - ReadWriteOnce
+
+    # PVC Storage Size for PostgreSQL volume
+    size: 20Gi
+
+    # Annotations for the PVC
+    annotations: {}
+
+    # Selector to match an existing Persistent Volume (this value is evaluated as a template)
+    # selector:
+    #   matchLabels:
+    #     app: my-app
+    selector: {}
+
+    # Custom PVC dataSource
+    dataSource: {}
+    
+    # Custom PVC dataSourceRef (K8s versions 1.24+) (If specified dataSource will be ignored)
+    dataSourceRef: {}
+
+  initChownData:
+    # If false, data ownership will not be reset at startup
+    enabled: false
+
+    # postgresdb initChownData container image
+    image:
+      repository: busybox
+      tag: "1.34.1"
+      sha: ""
+      pullPolicy: IfNotPresent
+
+    # postgresdb initChownData resource requests and limits
+    resources: {}
+
+  # Create Headless service for postgresdb
+  postgresdb_service: false
+
+# NetWorkPolicy parameters
+networkPolicy:
+  enabled: false
+
+# Common Service Account
+serviceAccount:
+  create: false
+
+  # Automount service account token for the server service account
+  automountServiceAccountToken: true
+
+  # Annotations for service account. Evaluated as a template. Only used if `create` is `true`
+  annotations: {}
+
