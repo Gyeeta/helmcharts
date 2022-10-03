@@ -51,6 +51,7 @@ Selector labels
 {{- define "postgresdb.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "postgresdb.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+gyeeta.io/podtype: postgresdb
 {{- end }}
 
 {{/*

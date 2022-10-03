@@ -51,6 +51,7 @@ Selector labels
 {{- define "partha.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "partha.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+gyeeta.io/podtype: partha
 {{- end }}
 
 {{/*

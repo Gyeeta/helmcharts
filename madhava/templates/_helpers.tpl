@@ -48,6 +48,7 @@ Selector labels
 {{- define "madhava.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "madhava.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+gyeeta.io/podtype: madhava
 {{- end }}
 
 {{/*

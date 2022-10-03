@@ -25,6 +25,7 @@ Selector labels
 {{- define "madhava.postgresdb.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "madhava.postgresdb.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+gyeeta.io/podtype: madhava
 {{- end }}
 
 

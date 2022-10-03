@@ -105,3 +105,12 @@ partha_config:
   # Install Kernel Headers on hosts without Kernel Headers. Note this feature is beta and valid only for Debian, Ubuntu, and Redhat/Amazon Linux
   install_kern_headers: false
 
+
+# NetWorkPolicy parameters
+networkPolicy:
+  # Enable creation of NetworkPolicy resources. All egress is allowed and only ingress is filtered.
+  enabled: false
+  
+  # By default, all ingress traffic is blocked. Set to true if ingress is to be allowed 
+  allowIngress: false
+

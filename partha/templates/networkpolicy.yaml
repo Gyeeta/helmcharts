@@ -1,0 +1,19 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "partha.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "partha.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  podSelector: {}
+  egress:
+    - {}
+  policyTypes:
+  - Egress
+  {{- if not .Values.networkPolicy.allowIngress }}
+  - Ingress
+  {{- end }}
+{{- end }}

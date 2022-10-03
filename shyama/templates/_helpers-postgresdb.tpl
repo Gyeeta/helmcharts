@@ -25,6 +25,7 @@ Selector labels
 {{- define "shyama.postgresdb.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "shyama.postgresdb.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+gyeeta.io/podtype: shyama
 {{- end }}
 
 

@@ -48,6 +48,7 @@ Selector labels
 {{- define "shyama.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "shyama.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+gyeeta.io/podtype: shyama
 {{- end }}
 
 {{/*
