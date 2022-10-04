@@ -30,6 +30,13 @@ To connect to madhava from outside the cluster execute the following commands to
 
 {{- end }}
 
+Number of Replicas configured : {{ .Values.replicaCount }}
+
+Number of Hosts that can be monitored using these Replicas can range from {{ mul .Values.replicaCount 40 }} to {{ mul .Values.replicaCount 500 }} depending on Madhava Hosts CPU/Memory specs.
+
+Sevice Domain of an individual replica is {{ .Release.Name }}-<Replica Number>.{{ include "madhava.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+
+
 {{- if and .Values.postgresdb.enabled (not .Values.postgresdb.persistence.enabled) }}
 #   
 #   WARNING: Persistence is disabled! You will lose your data when   

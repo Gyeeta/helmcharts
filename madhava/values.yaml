@@ -310,7 +310,12 @@ postgresdb:
 
 # NetWorkPolicy parameters
 networkPolicy:
+  # If enabled is true, all egress is allowed and ingress islimited to madhava ports with optional namespacesSelector
   enabled: false
+
+  # Kubernetes LabelSelector to explicitly select namespaces from which traffic could be allowed
+  namespacesSelector: {}
+
 
 # Common Service Account
 serviceAccount:

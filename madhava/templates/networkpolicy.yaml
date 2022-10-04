@@ -21,4 +21,18 @@ spec:
        {{- if and .Values.postgresdb.enabled .Values.postgresdb.postgresdb_service }}
        - port: {{ .Values.postgresdb.postgresdb_config.service.port }}
        {{- end }}
+      from:
+        - podSelector:
+            matchLabels:
+              gyeeta.io/podtype: "madhava"
+        - podSelector:
+            matchLabels:
+              gyeeta.io/podtype: "shyama"
+        - podSelector:
+            matchLabels:
+              gyeeta.io/podtype: "nodewebserver"
+        {{- with .Values.networkPolicy.namespacesSelector }}
+        - namespaceSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
 {{- end }}
