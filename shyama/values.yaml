@@ -508,7 +508,12 @@ postgresdb:
 
 # NetWorkPolicy parameters
 networkPolicy:
+  # If enabled is true, all egress is allowed and ingress islimited to shyama ports with optional namespaceSelector
   enabled: false
+
+  # Kubernetes LabelSelector to explicitly select namespaces from which traffic could be allowed
+  namespaceSelector: {}
+
 
 # Common Service Account
 serviceAccount:

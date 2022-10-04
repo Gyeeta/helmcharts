@@ -24,6 +24,9 @@ spec:
       from:
         - podSelector:
             matchLabels:
+              gyeeta.io/podtype: "partha"
+        - podSelector:
+            matchLabels:
               gyeeta.io/podtype: "madhava"
         - podSelector:
             matchLabels:
@@ -31,7 +34,7 @@ spec:
         - podSelector:
             matchLabels:
               gyeeta.io/podtype: "nodewebserver"
-        {{- with .Values.networkPolicy.namespacesSelector }}
+        {{- with .Values.networkPolicy.namespaceSelector }}
         - namespaceSelector:
             {{- toYaml . | nindent 12 }}
         {{- end }}
