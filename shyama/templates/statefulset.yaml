@@ -169,6 +169,7 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /etc/shyama         
+            reaonly: true
           {{- if $shyamavol }}
           - mountPath: /hostdata
             name: shyamavol

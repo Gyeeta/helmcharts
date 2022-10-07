@@ -41,7 +41,7 @@ affinity: {}
 # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 podAffinityPreset: ""
 
-# Pod anti-affinity preset. Ignored if `primary.affinity` is set. Allowed values: `soft` or `hard`
+# Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
 podAntiAffinityPreset: soft
 
 # Node affinity preset
@@ -120,7 +120,7 @@ shyama_config:
   # Postgres DB will be created based on this name... 
   shyama_name: ""
 
-  # Password string to be used by remote Madhava servers and Web servers to authenticate. If not specified, auto-generated
+  # Password string to be used by remote Madhava servers to authenticate. If not specified, auto-generated
   shyama_secret: ""
 
   # Cloud Operator : Specify as either of aws, gcp, azure. Other clouds not yet supported. For on-prem, leave blank

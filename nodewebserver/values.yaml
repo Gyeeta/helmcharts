@@ -1,0 +1,309 @@
+
+# Default values for Gyeeta nodewebserver Webserver :
+
+image:
+  registry: ghcr.io
+  repository: gyeeta/nodewebserver
+  # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Secrets containing credentials when pulling from private/secure registries.
+imagePullSecrets: []
+
+# Set a new name if you want to override the release name used
+nameOverride: ""
+
+# Same as nameOverride but for the fullname.
+fullnameOverride: ""
+
+# Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
+# nodewebserver pods host aliases
+# https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+hostAliases: []
+
+# Add additional pod annotations
+podAnnotations: {}
+
+# Add additional pod labels
+podLabels: {}
+
+# Set pod priorityClassName
+podPriorityClassName: ""
+
+# Affinity constraint for pod scheduling
+# Note: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+affinity: {}
+
+# Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+# ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+podAffinityPreset: ""
+
+# Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+podAntiAffinityPreset: ""
+
+# Node affinity preset
+nodeAffinityPreset:
+  # Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  type: ""
+
+  # Node label key to match Ignored if `affinity` is set.
+  # E.g.
+  # key: "kubernetes.io/e2e-az-name"
+  #
+  key: ""
+
+  # Node label values to match. Ignored if `affinity` is set.
+  # E.g.
+  # values:
+  #   - e2e-az1
+  #   - e2e-az2
+  #
+  values: []
+
+resources:
+  requests: {}
+  #  cpu: 250m
+  #  memory: 250Mi
+  limits: {}
+  #  cpu: 2000m
+  #  memory: 2Gi
+
+# Selectors used to deploy on a given nodes
+nodeSelector: {}
+
+# Tolerations for pods assignment
+tolerations: []
+
+# Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template
+# Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
+topologySpreadConstraints: []
+
+# Automate configuration before or after startup
+lifecycleHooks: {}
+
+updateStrategy:
+  # -- Perform rolling updates by default
+  type: RollingUpdate
+  rollingUpdate: {}
+
+# readinessProbe 
+readinessEnabled: true
+
+# Enable PodSecurityPolicy (only for K8s versions < 1.25)
+podSecurityPolicy: false
+
+# Global parameters for subcharts
+global: {}
+
+mounts:
+  # A list of extra volumes you want to add to nodewebserver container
+  volumes: []
+  # A list of extra volumes you want to add to nodewebserver container
+  volumeMounts: []
+
+extra:
+  # -- Extra environment variables that will be pass onto nodewebserver container
+  env: {}
+  # -- Extra command-line arguments
+  args: []
+
+
+# Number of nodewebserver replicas.
+replicaCount: 1
+
+#
+# nodewebserver config  
+#
+nodewebserver_config:
+
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  shyama_hosts: []
+
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  shyama_ports: []
+
+  # admin user password. If userpass_json admin password is also specified, this admin password will take precedence. 
+  # If both admin_password and userpass_json are not specified, admin_password will be auto-generated. 
+  admin_password: ""
+
+  # User Password File in JSON format. Roles are of 3 types : admin, readwrite and readonly
+  userpass_json: ""
+  # userpass_json: |
+  # [
+  #   {
+  #     "user"		:	"admin",
+  #     "password"	:	"gyeeta",
+  #     "role"		:	[ "admin" ],
+  #   },
+  #   {
+  #     "user"		:	"user1",
+  #     "password"	:	"pass1",
+  #     "role"		:	[ "readonly" ]
+  #   },
+  #   {
+  #     "user"		:	"user2",
+  #     "password"	:	"pass2",
+  #     "role"		:	[ "readwrite" ]
+  #   }
+  # ]
+
+  # Secret string to be used for JWT HMAC encoding. Will be auto-generated if not specified. 
+  jwtsecret: ""
+
+  # JWT Token expiry duration
+  tokenexpiry: "1d"
+
+  # HTTPS settings if enabled. Default is to use HTTP. Note this is for the nodewebserver backend pod itself and is separate from the 
+  # Ingress TLS options below
+  https:
+    enabled: false
+
+    # Specify TLS Certificate in PEM format (Please specify either this or existing_secret_name if external secret is already present.)
+    cert: ""
+
+    # Specify TLS Private key in PEM format (Please specify either this or existing_secret_name if external secret is already present.)
+    key: ""
+
+    # If Private Key is encrypted using a pass phrase
+    passphrase: ""
+
+    # TLS Certificate secret name if already existent. Specify only if cert and key are empty. The secret must be in same namespace.
+    existing_secret_name: ""
+
+  # nodewebserver service config
+  service:
+
+    # nodewebserver Service type 
+    type: ClusterIP
+
+    # Service port
+    port: 10039
+
+    # Specify if type set to NodePort. Choose port between <30000-32767>
+    # ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    nodePort: ""
+
+    # Static clusterIP or None for headless services
+    clusterIP: ""
+
+    # Service Annotations 
+    annotations: {}
+
+    # Load balancer IP if service type is `LoadBalancer`
+    # Set the LoadBalancer service type to internal only
+    loadBalancerIP: ""
+
+    # Enable client source IP preservation for type set to LoadBalancer or NodePort
+    # ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    externalTrafficPolicy: Cluster
+
+    # Addresses that are allowed when service is LoadBalancer
+    # loadBalancerSourceRanges:
+    # - 10.10.10.0/24
+    loadBalancerSourceRanges: []
+
+  # Configure the ingress resource that allows you to access Gyeeta nodewebserver
+  ingress:
+    # Enable ingress controller resource
+    enabled: false
+
+    # Default host for the ingress resource
+    hostname: gyeeta.local
+
+    # IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
+    ingressClassName: ""
+
+    # Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
+    # See : https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/annotations.md
+    # Use this parameter to set the required annotations for cert-manager, see https://cert-manager.io/docs/usage/ingress/#supported-annotations
+    # e.g:
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   cert-manager.io/cluster-issuer: cluster-issuer-name
+    #
+    annotations: {}
+
+    # The list of additional hostnames to be covered with this ingress record.
+    # extraHosts:
+    # - name: gyeeta.local
+    #   path: /
+    #   pathType: ImplementationSpecific
+    #
+    extraHosts: []
+
+    # The TLS configuration for additional hostnames to be covered with this ingress record.
+    # see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+    # extraTls:
+    # - hosts:
+    #     - gyeeta.local
+    #   secretName: gyeeta.local-tls
+    extraTls: []
+
+    # If you're providing your own certificates, please use this to add the certificates as secrets
+    # key and certificate should start with -----BEGIN CERTIFICATE----- or
+    # -----BEGIN RSA PRIVATE KEY-----
+    #
+    # name should line up with a tlsSecret set further up
+    # If you're using cert-manager, this is unneeded, as it will create the secret for you if it is not set
+    # e.g:
+    # - name: gyeeta.local-tls
+    #   key:
+    #   certificate:
+    secrets: []
+
+    # Additional rules to be covered with this ingress record
+    # e.g:
+    # extraRules:
+    # - host: example.local
+    #     http:
+    #       path: /
+    #       backend:
+    #         service:
+    #           name: example-svc
+    #           port:
+    #             name: http
+    extraRules: []
+
+    # Enable TLS configuration for the hostname defined at `nodewebserver_config.ingress.hostname` parameter
+    # TLS certificates will be retrieved from a TLS secret with name: `{{- printf "%s-tls" .Values.nodewebserver_config.ingress.hostname }}`
+    # You can:
+    #   - Use the `nodewebserver_config.ingress.secrets` parameter to create this TLS secret
+    #   - Rely on cert-manager to create it by setting the corresponding annotations
+    #   - Rely on Helm to create self-signed certificates by setting `nodewebserver_config.ingress.selfSigned=true`
+    tls: false
+
+    # Create a TLS secret for this ingress record using self-signed certificates generated by Helm
+    selfSigned: false
+
+    # Force Ingress API version (automatically detected if not set)
+    apiVersion: ""
+
+    # Ingress path
+    path: /
+
+    # Ingress path type
+    pathType: ImplementationSpecific
+
+
+# NetWorkPolicy parameters
+networkPolicy:
+  # If enabled is true, all egress is allowed and ingress islimited to nodewebserver ports with optional namespaceSelector
+  enabled: false
+
+  # Kubernetes LabelSelector to explicitly select namespaces from which traffic could be allowed
+  namespaceSelector: {}
+
+
+# Common Service Account
+serviceAccount:
+  create: false
+
+  # Automount service account token for the server service account
+  automountServiceAccountToken: true
+
+  # Annotations for service account. Evaluated as a template. Only used if `create` is `true`
+  annotations: {}
+

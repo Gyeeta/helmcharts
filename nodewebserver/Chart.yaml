@@ -1,0 +1,18 @@
+apiVersion: v2
+version: 0.1.0
+appVersion: 0.1.0
+description: Provides nodewebserver - Gyeeta's Webserver component
+home: https://github.com/Gyeeta/helmcharts/tree/main/nodewebserver
+icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+keywords:
+  - webserver
+  - nodejs
+maintainers:
+  - name: Gyeeta
+    url: https://github.com/Gyeeta/helmcharts
+name: madhava
+sources:
+  - https://github.com/Gyeeta/nodewebserver
+home: https://gyeeta.io
+annotations:
+  category: Webserver

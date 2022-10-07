@@ -41,7 +41,7 @@ affinity: {}
 # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 podAffinityPreset: ""
 
-# Pod anti-affinity preset. Ignored if `primary.affinity` is set. Allowed values: `soft` or `hard`
+# Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
 podAntiAffinityPreset: soft
 
 # Node affinity preset

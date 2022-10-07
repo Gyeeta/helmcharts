@@ -1,0 +1,52 @@
+{{- if .Values.nodewebserver_config.ingress.enabled -}}
+apiVersion: {{ include "nodewebserver.capabilities.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ include "nodewebserver.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nodewebserver.labels" . | nindent 4 }}
+{{- with .Values.podAnnotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  {{- if and .Values.nodewebserver_config.ingress.ingressClassName (include "nodewebserver.ingress.supportsIngressClassname" .) }}
+  ingressClassName: {{ .Values.nodewebserver_config.ingress.ingressClassName | quote }}
+  {{- end }}
+  rules:
+    {{- if .Values.nodewebserver_config.ingress.hostname }}
+    - host: {{ .Values.nodewebserver_config.ingress.hostname }}
+      http:
+        paths:
+          - path: {{ .Values.nodewebserver_config.ingress.path }}
+            {{- if eq "true" (include "nodewebserver.ingress.supportsPathType" .) }}
+            pathType: {{ .Values.nodewebserver_config.ingress.pathType }}
+            {{- end }}
+            backend: {{- include "nodewebserver.ingress.backend" (dict "serviceName" "nodewebserver" "servicePort" $.Values.nodewebserver_config.service.port "context" $)  | nindent 14 }}
+    {{- end }}
+    {{- range .Values.nodewebserver_config.ingress.extraHosts }}
+    - host: {{ .name }}
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            {{- if eq "true" (include "nodewebserver.ingress.supportsPathType" $) }}
+            pathType: {{ default "ImplementationSpecific" .pathType }}
+            {{- end }}
+            backend: {{- include "nodewebserver.ingress.backend" (dict "serviceName" "nodewebserver" "servicePort" $.Values.nodewebserver_config.service.port "context" $) | nindent 14 }}
+    {{- end }}
+    {{- if .Values.nodewebserver_config.ingress.extraRules }}
+    {{- include "nodewebserver.tplvalues" (dict "value" .Values.nodewebserver_config.ingress.extraRules "context" $) | nindent 4 }}
+    {{- end }}
+  {{- if or (and .Values.nodewebserver_config.ingress.tls (or (include "nodewebserver.ingress.certManagerRequest" ( dict "annotations" .Values.nodewebserver_config.ingress.annotations )) .Values.nodewebserver_config.ingress.selfSigned)) .Values.nodewebserver_config.ingress.extraTls }}
+  tls:
+    {{- if and .Values.nodewebserver_config.ingress.tls (or (include "nodewebserver.ingress.certManagerRequest" ( dict "annotations" .Values.nodewebserver_config.ingress.annotations )) .Values.nodewebserver_config.ingress.selfSigned) }}
+    - hosts:
+        - {{ .Values.nodewebserver_config.ingress.hostname }}
+      secretName: {{ printf "%s-hosts" (include "nodewebserver.names.fullname" .) }}
+    {{- end }}
+    {{- if .Values.nodewebserver_config.ingress.extraTls }}
+    {{- toYaml .Values.nodewebserver_config.ingress.extraTls | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end }}

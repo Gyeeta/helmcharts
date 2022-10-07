@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nodewebserver.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "nodewebserver.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "nodewebserver.selectorLabels" . | nindent 6 }}
+  replicas: {{ .Values.replicaCount }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "nodewebserver.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:          
+      {{- if .Values.serviceAccount.create }}
+      serviceAccount: "gyeeta-nodewebserver"
+      {{- else }}
+      serviceAccount: "default"
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
+      {{- if .Values.hostAliases }}
+      hostAliases: {{- include "nodewebserver.tplvalues" (dict "value" .Values.hostAliases "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity: {{- include "nodewebserver.tplvalues" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAffinity: {{- include "nodewebserver.affinities.pods" (dict "type" .Values.podAffinityPreset "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "nodewebserver.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "nodewebserver.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector: {{- include "nodewebserver.tplvalues" (dict "value" .Values.nodeSelector "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations: {{- include "nodewebserver.tplvalues" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints: {{- include "nodewebserver.tplvalues" (dict "value" .Values.topologySpreadConstraints "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.podPriorityClassName }}
+      priorityClassName: {{ .Values.podPriorityClassName }}
+      {{- end }}
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: nodewebserver
+          image: {{ include "nodewebserver.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            readOnlyRootFilesystem: true 
+          args:
+            - start
+            {{- with .Values.extra.args }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          env:
+            - name: CFG_ENV
+              value: "/etc/nodewebserver/nodewebserver_main.cfg"
+          {{- if and .Values.nodewebserver_config.https.enabled .Values.nodewebserver_config.https.existing_secret_name }}
+            - name: CFG_TLSPASSPHRASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nodewebserver.tplvalues" (dict "value" .Values.nodewebserver_config.https.existing_secret_name "context" $) | quote }}
+                  key: "tls.key"
+                  optional: true
+          {{- end }}
+          {{- range $key, $value := .Values.extra.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+          {{- end }}
+          ports:
+            - name: tcp-nodewebserver
+              containerPort: {{ .Values.nodewebserver.service.port }}
+          livenessProbe:
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 6
+            httpGet:
+              path: /v1/currtime
+              port: {{ .Values.nodewebserver.service.port }}
+          readinessProbe:
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 6
+            httpGet:
+              path: /v1/healthz
+              port: {{ .Values.nodewebserver.service.port }}
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+          {{- if .Values.lifecycleHooks }}
+          lifecycle: {{- include "nodewebserver.tplvalues" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+          - name: secret-volume
+            mountPath: /etc/nodewebserver
+          {{- if and .Values.nodewebserver_config.https.enabled .Values.nodewebserver_config.https.existing_secret_name }}
+          - name: ext-secret
+            mountPath: /etc/extnode
+          {{- end }}              
+          {{- with .Values.mounts.volumeMounts }}
+             {{- toYaml . | nindent 10 }}
+          {{- end }}              
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: {{ include "nodewebserver.fullname" . }}
+        {{- if and .Values.nodewebserver_config.https.enabled .Values.nodewebserver_config.https.existing_secret_name }}
+        - name: ext-secret
+          secret:
+            secretName: {{ include "nodewebserver.tplvalues" (dict "value" .Values.nodewebserver_config.https.existing_secret_name "context" $) | quote }}
+        {{- end }}              
+        {{- with .Values.mounts.volumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.postgresdb.mounts.volumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+

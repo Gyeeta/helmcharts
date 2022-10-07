@@ -1,0 +1,33 @@
+{{- if .Values.podSecurityPolicy }}
+{{- if .Capabilities.APIVersions.Has "policy/v1beta1/PodSecurityPolicy" }}
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: {{ include "nodewebserver.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "nodewebserver.labels" . | nindent 4 }}
+  {{- if .Values.podAnnotations }}
+  annotations:      
+    {{- with .Values.podAnnotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
+spec:
+  fsGroup:
+    rule: RunAsAny
+  runAsUser:
+    ranges:
+    - max: 1001
+      min: 1001
+    rule: MustRunAs
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+    - secret
+  readOnlyRootFilesystem: true
+{{- end }}
+{{- end }}
+
