@@ -10,7 +10,7 @@ keywords:
 maintainers:
   - name: Gyeeta
     url: https://github.com/Gyeeta/helmcharts
-name: madhava
+name: nodewebserver
 sources:
   - https://github.com/Gyeeta/nodewebserver
 home: https://gyeeta.io

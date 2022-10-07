@@ -10,11 +10,11 @@ Gyeeta Webserver can be accessed on the following DNS name from within your clus
 
     {{ include "nodewebserver.servicename" . }}.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }} ( port {{ .Values.nodewebserver_config.service.port }} )
 
-{{- if nodewebserver_config.ingress.enabled }}
+{{- if .Values.nodewebserver_config.ingress.enabled }}
 
    The Gyeeta Ingress URL to connect from outside your cluster is :
 
-   http{{ if nodewebserver_config.ingress.tls }}s{{ end }}://{{ nodewebserver_config.ingress.hostname }}/"
+   http{{ if .Values.nodewebserver_config.ingress.tls }}s{{ end }}://{{ .Values.nodewebserver_config.ingress.hostname }}/"
 
 {{- else }}
    
@@ -24,7 +24,7 @@ Gyeeta Webserver can be accessed on the following DNS name from within your clus
 
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "nodewebserver.servicename" . }})
-    echo "http{{ if nodewebserver_config.https.enabled }}s{{ end }}://${NODE_IP}:${NODE_PORT}"
+    echo "http{{ if .Values.nodewebserver_config.https.enabled }}s{{ end }}://${NODE_IP}:${NODE_PORT}"
 
 {{- else if contains "LoadBalancer" .Values.nodewebserver_config.service.type }}
 

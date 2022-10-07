@@ -136,7 +136,7 @@ nodewebserver_config:
   #   {
   #     "user"		:	"admin",
   #     "password"	:	"gyeeta",
-  #     "role"		:	[ "admin" ],
+  #     "role"		:	[ "admin" ]
   #   },
   #   {
   #     "user"		:	"user1",

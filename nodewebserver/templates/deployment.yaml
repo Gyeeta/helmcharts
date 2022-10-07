@@ -87,8 +87,8 @@ spec:
               value: "{{ $value }}"
           {{- end }}
           ports:
-            - name: tcp-nodewebserver
-              containerPort: {{ .Values.nodewebserver.service.port }}
+            - name: tcp-node
+              containerPort: {{ .Values.nodewebserver_config.service.port }}
           livenessProbe:
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -97,7 +97,7 @@ spec:
             failureThreshold: 6
             httpGet:
               path: /v1/currtime
-              port: {{ .Values.nodewebserver.service.port }}
+              port: {{ .Values.nodewebserver_config.service.port }}
           readinessProbe:
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -106,7 +106,7 @@ spec:
             failureThreshold: 6
             httpGet:
               path: /v1/healthz
-              port: {{ .Values.nodewebserver.service.port }}
+              port: {{ .Values.nodewebserver_config.service.port }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
@@ -133,9 +133,6 @@ spec:
             secretName: {{ include "nodewebserver.tplvalues" (dict "value" .Values.nodewebserver_config.https.existing_secret_name "context" $) | quote }}
         {{- end }}              
         {{- with .Values.mounts.volumes }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.postgresdb.mounts.volumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
 

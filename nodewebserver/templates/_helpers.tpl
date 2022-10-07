@@ -56,9 +56,10 @@ Get the nodewebserver Service Name. Keep as nodewebserver if namespace is non-de
 */}}
 {{- define "nodewebserver.servicename" -}}
 {{- if eq .Release.Namespace "default" }}
-{{- printf "%s" ( nodewebserver.fullnameOverride ) }}
+{{- printf "%s" ( include "nodewebserver.fullname" ) }}
 {{- else }}
-{{ "nodewebserver" }}
+{{- printf "nodewebserver" }}
+{{- end }}
 {{- end }}
 
 
@@ -240,6 +241,7 @@ Return the appropriate apiVersion for ingress.
 {{- print "networking.k8s.io/v1beta1" -}}
 {{- else -}}
 {{- print "networking.k8s.io/v1" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

@@ -13,24 +13,24 @@ metadata:
     {{- end }}
   {{- end }}
 spec:
-  type: {{ .Values.nodewebserver.service.type }}
-  {{- if or (eq .Values.nodewebserver.service.type "LoadBalancer") (eq .Values.nodewebserver.service.type "NodePort") }}
-  externalTrafficPolicy: {{ .Values.nodewebserver.service.externalTrafficPolicy | quote }}
+  type: {{ .Values.nodewebserver_config.service.type }}
+  {{- if or (eq .Values.nodewebserver_config.service.type "LoadBalancer") (eq .Values.nodewebserver_config.service.type "NodePort") }}
+  externalTrafficPolicy: {{ .Values.nodewebserver_config.service.externalTrafficPolicy | quote }}
   {{- end }}
-  {{- if and (eq .Values.nodewebserver.service.type "LoadBalancer") (not (empty .Values.nodewebserver.service.loadBalancerSourceRanges)) }}
-  loadBalancerSourceRanges: {{ .Values.nodewebserver.service.loadBalancerSourceRanges }}
+  {{- if and (eq .Values.nodewebserver_config.service.type "LoadBalancer") (not (empty .Values.nodewebserver_config.service.loadBalancerSourceRanges)) }}
+  loadBalancerSourceRanges: {{ .Values.nodewebserver_config.service.loadBalancerSourceRanges }}
   {{- end }}
-  {{- if and (eq .Values.nodewebserver.service.type "LoadBalancer") (not (empty .Values.nodewebserver.service.loadBalancerIP)) }}
-  loadBalancerIP: {{ .Values.nodewebserver.service.loadBalancerIP }}
+  {{- if and (eq .Values.nodewebserver_config.service.type "LoadBalancer") (not (empty .Values.nodewebserver_config.service.loadBalancerIP)) }}
+  loadBalancerIP: {{ .Values.nodewebserver_config.service.loadBalancerIP }}
   {{- end }}
-  {{- if and .Values.nodewebserver.service.clusterIP (eq .Values.nodewebserver.service.type "ClusterIP") }}
-  clusterIP: {{ .Values.nodewebserver.service.clusterIP }}
+  {{- if and .Values.nodewebserver_config.service.clusterIP (eq .Values.nodewebserver_config.service.type "ClusterIP") }}
+  clusterIP: {{ .Values.nodewebserver_config.service.clusterIP }}
   {{- end }}
   ports:
-    - name: tcp-nodewebserver
-      port: {{ .Values.nodewebserver.service.port }}
-      targetPort: {{ .Values.nodewebserver.service.port }}
-      {{- if and (or (eq .Values.nodewebserver.service.type "NodePort") (eq .Values.nodewebserver_config.service.type "LoadBalancer")) (not (empty .Values.nodewebserver_config.service.nodePort)) }}
+    - name: tcp-node
+      port: {{ .Values.nodewebserver_config.service.port }}
+      targetPort: {{ .Values.nodewebserver_config.service.port }}
+      {{- if and (or (eq .Values.nodewebserver_config.service.type "NodePort") (eq .Values.nodewebserver_config.service.type "LoadBalancer")) (not (empty .Values.nodewebserver_config.service.nodePort)) }}
       nodePort: {{ .Values.nodewebserver_config.service.nodePort }}
       {{- else if eq .Values.nodewebserver_config.service.type "ClusterIP" }}
       nodePort: null
