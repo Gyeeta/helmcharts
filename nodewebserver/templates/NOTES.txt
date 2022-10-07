@@ -18,7 +18,7 @@ Gyeeta Webserver can be accessed on the following DNS name from within your clus
 
 {{- else }}
    
-   Execute the following commands to get the nodewebserver IP and Port to connect from outside your cluster :
+Execute the following commands to get the nodewebserver IP and Port to connect from outside your cluster :
 
 {{- if contains "NodePort" .Values.nodewebserver_config.service.type }}
 

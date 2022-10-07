@@ -176,7 +176,7 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /etc/madhava         
-            reaonly: true
+            readOnly: true
           {{- if $madhavavol }}
           - mountPath: /hostdata
             name: madhavavol
