@@ -1,0 +1,131 @@
+
+# Default values for Gyeeta alertaction Alert Action Agent :
+
+image:
+  registry: ghcr.io
+  repository: gyeeta/alertaction
+  # -- The image tag to pull. Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Secrets containing credentials when pulling from private/secure registries.
+imagePullSecrets: []
+
+# Set a new name if you want to override the release name used
+nameOverride: ""
+
+# Same as nameOverride but for the fullname.
+fullnameOverride: ""
+
+# Kubernetes Cluster Domain
+clusterDomain: cluster.local
+
+# alertaction pods host aliases
+# https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+hostAliases: []
+
+# Add additional pod annotations
+podAnnotations: {}
+
+# Add additional pod labels
+podLabels: {}
+
+# Set pod priorityClassName
+podPriorityClassName: ""
+
+# Affinity constraint for pod scheduling
+# Note: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+affinity: {}
+
+# Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+# ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+podAffinityPreset: ""
+
+# Pod anti-affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+podAntiAffinityPreset: ""
+
+# Node affinity preset
+nodeAffinityPreset:
+  # Node affinity preset type. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+  type: ""
+
+  # Node label key to match Ignored if `affinity` is set.
+  # E.g.
+  # key: "kubernetes.io/e2e-az-name"
+  #
+  key: ""
+
+  # Node label values to match. Ignored if `affinity` is set.
+  # E.g.
+  # values:
+  #   - e2e-az1
+  #   - e2e-az2
+  #
+  values: []
+
+resources:
+  requests: {}
+  #  cpu: 50m
+  #  memory: 50Mi
+  limits: {}
+  #  cpu: 200m
+  #  memory: 250Mi
+
+# Selectors used to deploy on a given nodes
+nodeSelector: {}
+
+# Tolerations for pods assignment
+tolerations: []
+
+# Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template
+# Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
+topologySpreadConstraints: []
+
+# Automate configuration before or after startup
+lifecycleHooks: {}
+
+updateStrategy:
+  # -- Perform rolling updates by default
+  type: RollingUpdate
+  rollingUpdate: {}
+
+# Global parameters for subcharts
+global: {}
+
+mounts:
+  # A list of extra volumes you want to add to alertaction container
+  volumes: []
+  # A list of extra volumes you want to add to alertaction container
+  volumeMounts: []
+
+extra:
+  # -- Extra environment variables that will be pass onto alertaction container
+  env: {}
+  # -- Extra command-line arguments
+  args: []
+
+
+# Number of alertaction replicas.
+replicaCount: 1
+
+#
+# alertaction config  
+#
+alertaction_config:
+
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  shyama_hosts: []
+
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  shyama_ports: []
+
+# Common Service Account
+serviceAccount:
+  create: false
+
+  # Automount service account token for the server service account
+  automountServiceAccountToken: true
+
+  # Annotations for service account. Evaluated as a template. Only used if `create` is `true`
+  annotations: {}
+

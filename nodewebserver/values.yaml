@@ -89,9 +89,6 @@ updateStrategy:
   type: RollingUpdate
   rollingUpdate: {}
 
-# readinessProbe 
-readinessEnabled: true
-
 # Enable PodSecurityPolicy (only for K8s versions < 1.25)
 podSecurityPolicy: false
 
@@ -286,15 +283,6 @@ nodewebserver_config:
 
     # Ingress path type
     pathType: ImplementationSpecific
-
-
-# NetWorkPolicy parameters
-networkPolicy:
-  # If enabled is true, all egress is allowed and ingress islimited to nodewebserver ports with optional namespaceSelector
-  enabled: false
-
-  # Kubernetes LabelSelector to explicitly select namespaces from which traffic could be allowed
-  namespaceSelector: {}
 
 
 # Common Service Account

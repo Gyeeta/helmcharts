@@ -1,0 +1,17 @@
+
+Chart Name: {{ include "alertaction.name" . }}
+Chart Version: {{ .Chart.Version }}
+App Version: {{ .Chart.AppVersion }}
+
+
+Please be patient while the Gyeeta Alert Action Agent alertaction chart is being deployed...
+
+Number of Replicas configured : {{ .Values.replicaCount }}
+
+For further documentation on Gyeeta, please refer to :
+
+https://gyeeta.io/docs
+
+
+{{ include "alertaction.validateValues" . }}
+
