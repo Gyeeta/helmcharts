@@ -43,7 +43,7 @@ spec:
     {{- if and .Values.nodewebserver_config.ingress.tls (or (include "nodewebserver.ingress.certManagerRequest" ( dict "annotations" .Values.nodewebserver_config.ingress.annotations )) .Values.nodewebserver_config.ingress.selfSigned) }}
     - hosts:
         - {{ .Values.nodewebserver_config.ingress.hostname }}
-      secretName: {{ printf "%s-hosts" (include "nodewebserver.names.fullname" .) }}
+      secretName: {{ printf "%s-hosts" (include "nodewebserver.fullname" .) }}
     {{- end }}
     {{- if .Values.nodewebserver_config.ingress.extraTls }}
     {{- toYaml .Values.nodewebserver_config.ingress.extraTls | nindent 4 }}
