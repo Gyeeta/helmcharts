@@ -92,21 +92,27 @@ spec:
           livenessProbe:
             initialDelaySeconds: 30
             timeoutSeconds: 30
-            periodSeconds: 10
+            periodSeconds: 30
             successThreshold: 1
             failureThreshold: 6
             httpGet:
               path: /v1/currtime
               port: {{ .Values.nodewebserver_config.service.port }}
+              {{- if .Values.nodewebserver_config.https.enabled }}
+              scheme: HTTPS
+              {{- end }}
           readinessProbe:
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             timeoutSeconds: 30
-            periodSeconds: 10
+            periodSeconds: 60
             successThreshold: 1
             failureThreshold: 6
             httpGet:
               path: /v1/healthz
               port: {{ .Values.nodewebserver_config.service.port }}
+              {{- if .Values.nodewebserver_config.https.enabled }}
+              scheme: HTTPS
+              {{- end }}
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
