@@ -169,7 +169,6 @@ Compile all warnings into a single message, and call fail.
 {{- define "alertaction.validateValues" -}}
 {{- $messages := list -}}
 {{- $messages := append $messages (include "alertaction.validateValues.shyamahosts" .) -}}
-{{- $messages := append $messages (include "alertaction.validateValues.https" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
 
