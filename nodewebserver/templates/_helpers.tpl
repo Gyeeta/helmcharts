@@ -56,7 +56,7 @@ Get the nodewebserver Service Name. Keep as nodewebserver if namespace is non-de
 */}}
 {{- define "nodewebserver.servicename" -}}
 {{- if eq .Release.Namespace "default" }}
-{{- printf "%s" ( include "nodewebserver.fullname" ) }}
+{{- printf "%s" ( include "nodewebserver.fullname" . ) }}
 {{- else }}
 {{- printf "nodewebserver" }}
 {{- end }}
