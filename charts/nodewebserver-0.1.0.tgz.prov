@@ -1,0 +1,40 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+annotations:
+  category: Webserver
+apiVersion: v2
+appVersion: 0.1.0
+description: Provides nodewebserver - Gyeeta's Webserver component
+home: https://gyeeta.io
+icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+keywords:
+- - webserver
+- - nodejs
+maintainers:
+- - name: Gyeeta
+  url: https://github.com/Gyeeta/helmcharts
+name: nodewebserver
+sources:
+- - https://github.com/Gyeeta/nodewebserver
+version: 0.1.0
+
+...
+files:
+  nodewebserver-0.1.0.tgz: sha256:5ec09c8a4754db7786085d8ba58b6e3ae536ef07204c5a50c613be3e94cb6bdf
+-----BEGIN PGP SIGNATURE-----
+
+wsFcBAEBCgAQBQJjRUTaCRBeAN5OrfZXuAAAe9AQAELXdaUwEWuaxlHu0Qs/ODc5
+tX5kRlmKcUvtDdc3yexRygNcELkonpbRsfaFKQNE34P6c7wk57a6LlRKhfSADlBb
+4tL/apqS8YLxFoVj5ZKAzJjVy/G2GLOlP4pPwwCpnbITJ7oqnd8HcyX4+rLcD43f
+JO+qJf5HXJDHm3CyaAPoveZwMZWhp2XmpIeeHoxLelVDRg6p1CaJDZkp58Pd5XCg
+aZ0Cbz4RhC7NXAo5J9uM4ACIB9X9u7Li7jY3d1eCDp8FXm4ueEpOUrzgE5emvybw
+dmMjU8ugRVtwGhIajm33eILYn+25WWmQ4GYi59jYCE2XmXw54PQMcZqqUpnGLPQD
+QJO+cTmp00cByNrtzIOaOaJ7IxQxOXAAMR0CSwoUb2Kyw20aRhFID12pyLPT+ao4
+8T0xQ7BHwydYoZNOxp21ORwDKOd8WWNyC8PyckmxpStseXIuekqLPKUjN/n3YKx8
+wuBQqb/Z3zEqnGAdVg04HtToWd/gpPXUCaqNSlrFVTo5RNG/j6uYyEoIcYpkYQ9y
+Cjp6vLg5dYKl2K/Da28H7BVF/r507heIj6U+BY3O3MTw90U8J0CpM5yB6cQK7FES
+X0SaVjhbodg80O65mYb22eILvvPP3wSBjBc6f16yFgPjdRD+Ckkj9OWuofLdK8/8
+hzacnUBInjKx13n/ocBg
+=UZ+b
+-----END PGP SIGNATURE-----

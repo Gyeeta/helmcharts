@@ -11,10 +11,17 @@ if [ ! -f ~/.gnupg/PASS.gyeetainc ]; then
 	exit 1
 fi
 
-helm package --sign --passphrase-file ~/.gnupg/PASS.gyeetainc --key 'Gyeeta' --keyring ~/.gnupg/secring.gpg $PKG
+helm package --sign --passphrase-file ~/.gnupg/PASS.gyeetainc --key 'Gyeeta' --keyring ~/.gnupg/secring.gpg --dependency-update $PKG
 
 if [ $? -ne 0 ]; then
 	echo -e "\nERROR : Helm Package creation failed...\n\n"
+	exit 1
+fi
+
+helm repo index --url https://gyeeta.github.io/helmcharts ./
+
+if [ $? -ne 0 ]; then
+	echo -e "\nERROR : Helm repo index creation failed...\n\n"
 	exit 1
 fi
 
