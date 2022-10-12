@@ -20,7 +20,7 @@ entries:
     sources:
     - https://github.com/Gyeeta/alertaction
     urls:
-    - https://gyeeta.github.io/helmcharts/alertaction-0.1.0.tgz
+    - https://gyeeta.io/helmcharts/alertaction-0.1.0.tgz
     version: 0.1.0
   madhava:
   - annotations:
@@ -44,7 +44,7 @@ entries:
     sources:
     - https://github.com/Gyeeta/gyeeta
     urls:
-    - https://gyeeta.github.io/helmcharts/madhava-0.1.0.tgz
+    - https://gyeeta.io/helmcharts/madhava-0.1.0.tgz
     version: 0.1.0
   nodewebserver:
   - annotations:
@@ -66,7 +66,7 @@ entries:
     sources:
     - https://github.com/Gyeeta/nodewebserver
     urls:
-    - https://gyeeta.github.io/helmcharts/nodewebserver-0.1.0.tgz
+    - https://gyeeta.io/helmcharts/nodewebserver-0.1.0.tgz
     version: 0.1.0
   partha:
   - annotations:
@@ -91,7 +91,7 @@ entries:
     sources:
     - https://github.com/Gyeeta/gyeeta
     urls:
-    - https://gyeeta.github.io/helmcharts/partha-0.1.0.tgz
+    - https://gyeeta.io/helmcharts/partha-0.1.0.tgz
     version: 0.1.0
   postgresdb:
   - annotations:
@@ -117,7 +117,7 @@ entries:
     sources:
     - https://github.com/Gyeeta/gyeeta
     urls:
-    - https://gyeeta.github.io/helmcharts/postgresdb-0.1.0.tgz
+    - https://gyeeta.io/helmcharts/postgresdb-0.1.0.tgz
     version: 0.1.0
   shyama:
   - annotations:
@@ -141,6 +141,6 @@ entries:
     sources:
     - https://github.com/Gyeeta/gyeeta
     urls:
-    - https://gyeeta.github.io/helmcharts/shyama-0.1.0.tgz
+    - https://gyeeta.io/helmcharts/shyama-0.1.0.tgz
     version: 0.1.0
 generated: "2022-10-11T15:56:35.047929927+05:30"

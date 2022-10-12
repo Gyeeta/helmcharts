@@ -13,7 +13,7 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-helm repo index --url https://gyeeta.github.io/helmcharts ../docs/
+helm repo index --url https://gyeeta.io/helmcharts ../docs/
 
 if [ $? -ne 0 ]; then
 	echo -e "\nERROR : Helm repo index creation failed...\n\n"
