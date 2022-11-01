@@ -5,9 +5,9 @@ entries:
       category: Alert Agent
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-10-11T15:56:35.048908046+05:30"
+    created: "2022-11-01T15:20:39.401213552+05:30"
     description: Provides alertaction - Gyeeta's Alert Action Agent component
-    digest: f95284fe7e16e01967ed7c03639d2678d3c33c476bcbb009554dcdf56ee94e04
+    digest: 8cdb0851b637217ead889e7504c12ca91eece1ca109e23afe5dec0d6d1ea2d22
     home: https://gyeeta.io
     icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
     keywords:
@@ -27,9 +27,9 @@ entries:
       category: Server
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-10-11T15:56:35.049858736+05:30"
+    created: "2022-11-01T15:20:39.402103986+05:30"
     description: Provides Madhava - Gyeeta's Intermediate Server component
-    digest: 6392c4f5ee92b9dcef877e665b8591d655a5d95df0f967ac02820feba5a4445c
+    digest: 3ab441051b626c675726a3b1274cc1e39c499d5c699c68bcb0bd62bad634fef9
     home: https://gyeeta.io
     icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
     keywords:
@@ -51,9 +51,9 @@ entries:
       category: Webserver
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-10-11T15:56:35.050609123+05:30"
+    created: "2022-11-01T15:20:39.402838384+05:30"
     description: Provides nodewebserver - Gyeeta's Webserver component
-    digest: 5ec09c8a4754db7786085d8ba58b6e3ae536ef07204c5a50c613be3e94cb6bdf
+    digest: 791a06e9996947c595184cbe8292bfe20a29bb0c8a04813b5b8d6a62962a14c9
     home: https://gyeeta.io
     icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
     keywords:
@@ -73,10 +73,10 @@ entries:
       category: Analytics
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-10-11T15:56:35.051201118+05:30"
+    created: "2022-11-01T15:20:39.403296043+05:30"
     description: partha is the Host Monitor Agent of Gyeeta used for observability
       of the activities on the monitored hosts
-    digest: 121e68a150cee765cda181bc1ccf902938f96e111907f9447eb522ea3367c198
+    digest: 075b743a32d3614723d0a0c777dc60f5e86d7e5394586780d7eae77f1c54124d
     home: https://gyeeta.io
     icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
     keywords:
@@ -98,10 +98,10 @@ entries:
       category: Database
     apiVersion: v2
     appVersion: 12.2.0
-    created: "2022-10-11T15:56:35.054244611+05:30"
+    created: "2022-11-01T15:20:39.403955324+05:30"
     description: Provides PostgreSQL (Postgres), the database used by Gyeeta server
       components (Shyama and Madhava)
-    digest: 3acc6398f58bec61bfb95bfd5c33ef9a128fde0c428557af4e1a75169a3bb1ee
+    digest: 1a792f21e3353e27b5a8c1570284024fc25342e915c11a08345dc92276286020
     home: https://gyeeta.io
     icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
     keywords:
@@ -124,9 +124,9 @@ entries:
       category: Server
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-10-11T15:56:35.057885195+05:30"
+    created: "2022-11-01T15:20:39.404981815+05:30"
     description: Provides Shyama - Gyeeta's Central Server component
-    digest: 1bf05e1075894db60bc28df877072b80358e900917f3118fd1f50615a57436ed
+    digest: 32b22f17861b058680e222e0958dca41cc8e9500b1e235f9260b494bf61d56e7
     home: https://gyeeta.io
     icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
     keywords:
@@ -143,4 +143,4 @@ entries:
     urls:
     - https://gyeeta.io/helmcharts/shyama-0.1.0.tgz
     version: 0.1.0
-generated: "2022-10-11T15:56:35.047929927+05:30"
+generated: "2022-11-01T15:20:39.400598841+05:30"
