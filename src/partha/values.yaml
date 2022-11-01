@@ -31,10 +31,10 @@ podSecurityPolicy: true
 
 resources:
   requests:
-    cpu: 100m
+    # cpu: 100m
     memory: 150Mi
   limits:
-    cpu: 1000m
+    # cpu: 1000m
     memory: 1024Mi
 
 # Selectors used to deploy on a given nodes
