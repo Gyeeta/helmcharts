@@ -126,10 +126,10 @@ madhava_config:
   # Postgres DB will be created based on this name... 
   madhava_name: ""
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Service Names
   shyama_hosts: []
 
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
   shyama_ports: []
 
   # Shyama secret password string to be used by Madhava servers and Web servers to authenticate. Please specify either

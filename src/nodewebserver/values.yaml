@@ -116,10 +116,10 @@ replicaCount: 1
 #
 nodewebserver_config:
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Service Names
   shyama_hosts: []
 
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
   shyama_ports: []
 
   # admin user password. If userpass_json admin password is also specified, this admin password will take precedence. 

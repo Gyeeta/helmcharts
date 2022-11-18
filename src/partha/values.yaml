@@ -69,13 +69,13 @@ extra:
 # partha config  
 #
 partha_config:
-  # Cluster Name (Mandatory)
+  # Cluster Name (Mandatory) : Specify a name to tag this Cluster
   cluster_name: ""
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Hostnames
+  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Service Names
   shyama_hosts: []
 
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
   shyama_ports: []
 
   # Cloud Operator : Specify as either of aws, gcp, azure. Other clouds not yet supported. For on-prem, leave blank
