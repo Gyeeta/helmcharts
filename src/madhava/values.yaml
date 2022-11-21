@@ -112,7 +112,7 @@ extra:
 
 
 # Number of madhava replicas. This number needs to be based on max Hosts to be monitored / 200
-# If madhava is nstalled on nodes with little resources (< 4 CPU or < 8 GB RAM), more replicas will be required
+# If madhava is installed on nodes with little resources (< 4 CPU or < 8 GB RAM), more replicas will be required
 # Default 2 replicas
 replicaCount: 2
 
@@ -126,10 +126,11 @@ madhava_config:
   # Postgres DB will be created based on this name... 
   madhava_name: ""
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Service Names
+  # Shyama Service Domains (Mandatory) : Specify one or more Shyama Service Names (e.g., `[ "shyama1-headless" ]`)
   shyama_hosts: []
 
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  # Shyama Service Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (e.g. `[ 10037 ]`) 
+  # The Array must have equal number of elements as the `shyama_hosts` and in number format
   shyama_ports: []
 
   # Shyama secret password string to be used by Madhava servers and Web servers to authenticate. Please specify either
@@ -139,13 +140,13 @@ madhava_config:
   # See comment for shyama_secret. Specify only if shyama_secret is empty. The existing secret must be in same namespace.
   shyama_existing_secretname: ""
 
-  # Cloud Operator : Specify as either of aws, gcp, azure. Other clouds not yet supported. For on-prem, leave blank
+  # Cloud Operator : Specify as either of aws, gcp, azure. For other clouds or on-prem, leave blank
   cloud_type: ""
 
-  # Region Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud region name
+  # Region Name : Ignore if cloud_type is set. For on-prem or other clouds, specify as the Network region name
   region_name: ""
 
-  # Zone Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud zone name
+  # Zone Name : Ignore if cloud_type is set. For on-prem or other clouds, specify as the Network Zone name
   zone_name: ""
 
   # Debug and Process Log to file instead of stdout/stderr. If true will use the emptyDir mount point for logging to log/madhava.log
@@ -234,7 +235,7 @@ postgresdb:
   mounts:
     # A list of extra volumes you want to add to postgresdb container
     volumes: []
-    # A list of extra volumes you want to add to postgresdb container
+    # A list of extra volume mounts you want to add to postgresdb container
     volumeMounts: []
 
   extra:
@@ -251,7 +252,7 @@ postgresdb:
   # postgresdb config  
   #
   postgresdb_config:
-    # postgres user password
+    # postgres user password : If empty, will be auto-generated
     password: ""
 
     service:

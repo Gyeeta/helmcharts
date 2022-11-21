@@ -116,17 +116,19 @@ replicaCount: 1
 #
 nodewebserver_config:
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Service Names
+  # Shyama Service Domains (Mandatory) : Specify one or more Shyama Service Names (e.g., `[ "shyama1-headless" ]`)
   shyama_hosts: []
 
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  # Shyama Service Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (e.g. `[ 10037 ]`) 
+  # The Array must have equal number of elements as the `shyama_hosts` and in number format
   shyama_ports: []
 
-  # admin user password. If userpass_json admin password is also specified, this admin password will take precedence. 
+  # Web admin user password. If userpass_json admin password is also specified, this admin password will take precedence. 
   # If both admin_password and userpass_json are not specified, admin_password will be auto-generated. 
   admin_password: ""
 
-  # User Password File in JSON format. Roles are of 3 types : admin, readwrite and readonly
+  # List of Users, Passwords and their roles in JSON Array format. 
+  # Roles are of 3 types : admin, readwrite and readonly
   userpass_json: ""
   # userpass_json: |
   # [
@@ -147,10 +149,10 @@ nodewebserver_config:
   #   }
   # ]
 
-  # Secret string to be used for JWT HMAC encoding. Will be auto-generated if not specified. 
+  # Secret string to be used for JWT Auth Token encoding. Will be auto-generated if not specified. 
   jwtsecret: ""
 
-  # JWT Token expiry duration
+  # Authentication Token expiry duration
   tokenexpiry: "1d"
 
   # HTTPS settings if enabled. Default is to use HTTP. Note this is for the nodewebserver backend pod itself and is separate from the 
@@ -158,16 +160,16 @@ nodewebserver_config:
   https:
     enabled: false
 
-    # Specify TLS Certificate in PEM format (Please specify either this or existing_secret_name if external secret is already present.)
+    # If HTTPS enabled, TLS Certificate in PEM format (Please specify this or existing_secret_name)
     cert: ""
 
-    # Specify TLS Private key in PEM format (Please specify either this or existing_secret_name if external secret is already present.)
+    # If HTTPS enabled, TLS Private key in PEM format (Please specify this or existing_secret_name)
     key: ""
 
-    # If Private Key is encrypted using a pass phrase
+    # If TLS Private Key is encrypted using a pass phrase
     passphrase: ""
 
-    # TLS Certificate secret name if already existent. Specify only if cert and key are empty. The secret must be in same namespace.
+    # External TLS Certificate Secret name if already existent. Specify only if cert and key are empty. The secret must be in same namespace.
     existing_secret_name: ""
 
   # nodewebserver service config
@@ -202,15 +204,15 @@ nodewebserver_config:
     # - 10.10.10.0/24
     loadBalancerSourceRanges: []
 
-  # Configure the ingress resource that allows you to access Gyeeta nodewebserver
+  # Configure the Ingress resource that allows you to access Gyeeta nodewebserver
   ingress:
-    # Enable ingress controller resource
+    # Enable Ingress Controller resource
     enabled: false
 
     # Default host for the ingress resource
     hostname: gyeeta.local
 
-    # IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
+    # Ingress Class that will be be used to implement the Ingress (Kubernetes 1.18+)
     # ingressClassName: nginx
     ingressClassName: ""
 
@@ -265,7 +267,7 @@ nodewebserver_config:
     #             name: http
     extraRules: []
 
-    # Enable TLS configuration for the hostname defined at `nodewebserver_config.ingress.hostname` parameter
+    # Enable TLS configuration for the hostname defined at `ingress.hostname` parameter
     # TLS certificates will be retrieved from a TLS secret with name: `{{- printf "%s-tls" .Values.nodewebserver_config.ingress.hostname }}`
     # You can:
     #   - Use the `nodewebserver_config.ingress.secrets` parameter to create this TLS secret

@@ -113,10 +113,11 @@ replicaCount: 1
 #
 alertaction_config:
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Service Names
+  # Shyama Service Domains (Mandatory) : Specify one or more Shyama Service Names (e.g., `[ "shyama1-headless" ]`)
   shyama_hosts: []
 
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  # Shyama Service Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (e.g. `[ 10037 ]`) 
+  # The Array must have equal number of elements as the `shyama_hosts` and in number format
   shyama_ports: []
 
 # Common Service Account

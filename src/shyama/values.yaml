@@ -20,7 +20,7 @@ fullnameOverride: ""
 # Kubernetes Cluster Domain
 clusterDomain: cluster.local
 
-# Shyama pods host aliases
+# Shyama pod host aliases
 # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
 hostAliases: []
 
@@ -126,13 +126,13 @@ shyama_config:
   # Cloud Operator : Specify as either of aws, gcp, azure. Other clouds not yet supported. For on-prem, leave blank
   cloud_type: ""
 
-  # Region Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud region name
+  # Region Name : Ignore if cloud_type is set. For on-prem or other clouds, specify as the Network Region name
   region_name: ""
 
-  # Zone Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud zone name
+  # Zone Name : Ignore if cloud_type is set. For on-prem or other clouds, specify as the Network Zone name
   zone_name: ""
 
-  # Minimum number of Madhava servers that should register with Shyama before Shyama registers any Host Agent partha.
+  # Minimum number of Madhava servers that should register with Shyama before Shyama accepts any Host Agent partha.
   # Number of Madhava needed is approx <Max Hosts to monitor> / 200 (depending on Madhava host CPU/Memory specs) 
   min_madhava: 1
 
@@ -146,15 +146,16 @@ shyama_config:
 
   # Shyama DB (postgres) Config
   db:
-    # If postgres.enabled is true, then specify as localhost
+    # Postgres DB Host to connect to. If postgres.enabled is true, then specify as localhost
     postgres_hostname: "localhost"
     
+    # Postgres DB Port to connect to. If postgres.enabled is true, then specify as 10040
     postgres_port: 10040
 
-    # Specify only if external postgres DB to be used (`postgresdb.enabled` is false)
+    # Postgres Username. Specify only if external postgres DB to be used (`postgresdb.enabled` is false)
     external_postgres_user: ""
 
-    # Specify only if external postgres DB to be used (`postgresdb.enabled` is false)
+    # Postgres User Password. Specify only if external postgres DB to be used (`postgresdb.enabled` is false)
     external_postgres_password: ""
 
     # Number of days of data storage in DB (max 60) 
@@ -403,7 +404,7 @@ shyama_config:
 ##########################################
 postgresdb:
   
-  # Enable Shyama specific Postgres DB. If false, an external Postgres must be specified in the shyama config
+  # Enable Shyama specific Postgres DB container. If false, an external Postgres must be specified in the shyama config
   enabled: true
 
   image:
@@ -415,6 +416,7 @@ postgresdb:
   # Secrets containing credentials when pulling from private/secure registries.
   imagePullSecrets: []
 
+  # Postgres Container Resource Specs
   resources:
     requests: {}
     #  cpu: 250m
@@ -432,7 +434,7 @@ postgresdb:
   mounts:
     # A list of extra volumes you want to add to postgresdb container
     volumes: []
-    # A list of extra volumes you want to add to postgresdb container
+    # A list of extra volume mounts you want to add to postgresdb container
     volumeMounts: []
 
   extra:
@@ -508,7 +510,7 @@ postgresdb:
 
 # NetWorkPolicy parameters
 networkPolicy:
-  # If enabled is true, all egress is allowed and ingress islimited to shyama ports with optional namespaceSelector
+  # If enabled is true, all egress is allowed and ingress is limited to shyama ports with optional namespaceSelector
   enabled: false
 
   # Kubernetes LabelSelector to explicitly select namespaces from which traffic could be allowed

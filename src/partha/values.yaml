@@ -56,7 +56,7 @@ tolerations:
 mounts:
   # A list of volumes you want to add 
   volumes: []
-  # A list of volumes you want to add
+  # A list of volume mounts you want to add
   volumeMounts: []
 
 extra:
@@ -69,25 +69,26 @@ extra:
 # partha config  
 #
 partha_config:
-  # Cluster Name (Mandatory) : Specify a name to tag this Cluster
+  # Cluster Name (Mandatory) : Tag Name for this Cluster
   cluster_name: ""
 
-  # Shyama Server Domains (Mandatory) : Specify one or more Shyama Service Names
+  # Shyama Service Domains (Mandatory) : Specify one or more Shyama Service Names (e.g., `[ "shyama1-headless" ]`)
   shyama_hosts: []
 
-  # Shyama Server Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (Must be equal to number of shyama_hosts and in numerical format)
+  # Shyama Service Ports (Mandatory) : Specify one or more Shyama Service Port Numbers (e.g. `[ 10037 ]`) 
+  # The Array must have equal number of elements as the `shyama_hosts` and in number format
   shyama_ports: []
 
-  # Cloud Operator : Specify as either of aws, gcp, azure. Other clouds not yet supported. For on-prem, leave blank
+  # Cloud Operator : Specify as either of aws, gcp, azure. For other clouds or on-prem, leave blank
   cloud_type: ""
 
-  # Region Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud region name
+  # Region Name : Ignore if cloud_type is set. For on-prem or other clouds, specify as the Network region name
   region_name: ""
 
-  # Zone Name : Ignore if cloud_type is set. For on-prem or other clouds, specify to override the cloud zone name
+  # Zone Name : Ignore if cloud_type is set. For on-prem or other clouds, specify as the Network Zone name
   zone_name: ""
 
-  # Percent of Responses to be analyzed with eBPF for Response Time Calculations
+  # Percent of workload to be analyzed for Response and QPS Calculations
   response_sampling_percent: 100
 
   # Capture HTTP Error codes

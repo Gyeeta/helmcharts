@@ -1,7 +1,7 @@
 apiVersion: v2
 version: 0.1.1
 appVersion: 0.1.1
-description: partha is the Host Monitor Agent of Gyeeta used for observability of the activities on the monitored hosts
+description: Provides partha - the Host Monitor Agent of Gyeeta used for observability of the monitored hosts
 home: https://github.com/Gyeeta/helmcharts/tree/main/partha
 icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
 keywords:
