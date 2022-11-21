@@ -5,7 +5,28 @@ entries:
       category: Alert Agent
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-11-01T16:08:05.169115726+05:30"
+    created: "2022-11-21T23:18:44.164551286+05:30"
+    description: Provides alertaction - Gyeeta's Alert Action Agent component
+    digest: ac4cf50daad6fb6ff778f23b6b35ee39ab21828cf417c4ed873c78436443c9f5
+    home: https://gyeeta.io
+    icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+    keywords:
+    - alerting
+    - nodejs
+    maintainers:
+    - name: Gyeeta
+      url: https://github.com/Gyeeta/helmcharts
+    name: alertaction
+    sources:
+    - https://github.com/Gyeeta/alertaction
+    urls:
+    - https://gyeeta.io/helmcharts/alertaction-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      category: Alert Agent
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2022-11-21T23:18:44.161643309+05:30"
     description: Provides alertaction - Gyeeta's Alert Action Agent component
     digest: 5b8d400a33e929d7dfcd7a22908febad7d36588756fd41ec671e64fb58622466
     home: https://gyeeta.io
@@ -26,8 +47,31 @@ entries:
   - annotations:
       category: Server
     apiVersion: v2
+    appVersion: 0.1.1
+    created: "2022-11-21T23:18:44.184504868+05:30"
+    description: Provides Madhava - Gyeeta's Intermediate Server component
+    digest: 56e12eef309de2d91a6a8a68819199d5bd8215324684e9c840e71d8f854b9ec0
+    home: https://gyeeta.io
+    icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+    keywords:
+    - monitoring
+    - analytics
+    - alerting
+    - server
+    maintainers:
+    - name: Gyeeta
+      url: https://github.com/Gyeeta/helmcharts
+    name: madhava
+    sources:
+    - https://github.com/Gyeeta/gyeeta
+    urls:
+    - https://gyeeta.io/helmcharts/madhava-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      category: Server
+    apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-11-01T16:08:05.170921965+05:30"
+    created: "2022-11-21T23:18:44.179736298+05:30"
     description: Provides Madhava - Gyeeta's Intermediate Server component
     digest: 64c6154e3decf96ef134144283e28dada1c4707aa478fff5db3a0d706894119f
     home: https://gyeeta.io
@@ -51,7 +95,28 @@ entries:
       category: Webserver
     apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-11-01T16:08:05.172519645+05:30"
+    created: "2022-11-21T23:18:44.19317668+05:30"
+    description: Provides nodewebserver - Gyeeta's Webserver component
+    digest: bdcf54c059c9c0077c6c0c5c32465c0070453eb2f5443bf3567454648f7fc88d
+    home: https://gyeeta.io
+    icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+    keywords:
+    - webserver
+    - nodejs
+    maintainers:
+    - name: Gyeeta
+      url: https://github.com/Gyeeta/helmcharts
+    name: nodewebserver
+    sources:
+    - https://github.com/Gyeeta/nodewebserver
+    urls:
+    - https://gyeeta.io/helmcharts/nodewebserver-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      category: Webserver
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2022-11-21T23:18:44.189391598+05:30"
     description: Provides nodewebserver - Gyeeta's Webserver component
     digest: e7a9320680c9b0b9738cec374a06246cb9800949025b02721a837f203344e25e
     home: https://gyeeta.io
@@ -72,8 +137,32 @@ entries:
   - annotations:
       category: Analytics
     apiVersion: v2
+    appVersion: 0.1.1
+    created: "2022-11-21T23:18:44.196927736+05:30"
+    description: Provides partha - the Host Monitor Agent of Gyeeta used for observability
+      of the monitored hosts
+    digest: 11a46c6c326851dc313ea6a3e9eac3727fc1dec667a41a10c4886500faac0340
+    home: https://gyeeta.io
+    icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+    keywords:
+    - observability
+    - monitoring
+    - analytics
+    - ebpf
+    maintainers:
+    - name: Gyeeta
+      url: https://github.com/Gyeeta/helmcharts
+    name: partha
+    sources:
+    - https://github.com/Gyeeta/gyeeta
+    urls:
+    - https://gyeeta.io/helmcharts/partha-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      category: Analytics
+    apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-11-01T16:08:05.173006848+05:30"
+    created: "2022-11-21T23:18:44.19526927+05:30"
     description: partha is the Host Monitor Agent of Gyeeta used for observability
       of the activities on the monitored hosts
     digest: 0b468d64388fce5367ad4a53c95cee6cc3854ba4a2b12b4fbf48a56005304386
@@ -98,7 +187,32 @@ entries:
       category: Database
     apiVersion: v2
     appVersion: 12.2.0
-    created: "2022-11-01T16:08:05.173642637+05:30"
+    created: "2022-11-21T23:18:44.202906192+05:30"
+    description: Provides PostgreSQL (Postgres), the database used by Gyeeta server
+      components (Shyama and Madhava)
+    digest: 53078f42bedbaef8917b019b67ea7a4546b2218bcf557c05efdef9b6c233d245
+    home: https://gyeeta.io
+    icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+    keywords:
+    - postgresql
+    - database
+    - sql
+    - monitoring
+    - analytics
+    maintainers:
+    - name: Gyeeta
+      url: https://github.com/Gyeeta/helmcharts
+    name: postgresdb
+    sources:
+    - https://github.com/Gyeeta/postgresdb
+    urls:
+    - https://gyeeta.io/helmcharts/postgresdb-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      category: Database
+    apiVersion: v2
+    appVersion: 12.2.0
+    created: "2022-11-21T23:18:44.201429316+05:30"
     description: Provides PostgreSQL (Postgres), the database used by Gyeeta server
       components (Shyama and Madhava)
     digest: 93aa98a6275be5987ebbf0fd680eafdc1a741b835fbb9446854faa0ce3bec759
@@ -123,8 +237,31 @@ entries:
   - annotations:
       category: Server
     apiVersion: v2
+    appVersion: 0.1.1
+    created: "2022-11-21T23:18:44.207451787+05:30"
+    description: Provides Shyama - Gyeeta's Central Server component
+    digest: 706a04fb7f8cfe070a60b8dc34bf5431973a17da22dd01ff5e12b4dc8a45abd5
+    home: https://gyeeta.io
+    icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+    keywords:
+    - monitoring
+    - analytics
+    - alerting
+    - server
+    maintainers:
+    - name: Gyeeta
+      url: https://github.com/Gyeeta/helmcharts
+    name: shyama
+    sources:
+    - https://github.com/Gyeeta/gyeeta
+    urls:
+    - https://gyeeta.io/helmcharts/shyama-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      category: Server
+    apiVersion: v2
     appVersion: 0.1.0
-    created: "2022-11-01T16:08:05.174649369+05:30"
+    created: "2022-11-21T23:18:44.205561798+05:30"
     description: Provides Shyama - Gyeeta's Central Server component
     digest: 9778f5cd566bcca3c4d2ad1cb2cfdef72672ff395add8afc9ed9594b20f1f205
     home: https://gyeeta.io
@@ -143,4 +280,4 @@ entries:
     urls:
     - https://gyeeta.io/helmcharts/shyama-0.1.0.tgz
     version: 0.1.0
-generated: "2022-11-01T16:08:05.168466096+05:30"
+generated: "2022-11-21T23:18:44.128628799+05:30"
