@@ -11,6 +11,21 @@ The Partha Host Agent is installed as a Daemonset as it needs to be installed on
 
 - Kubernetes 1.19+
 - Helm 3.2.0+
+- Linux kernel version 4.4+
+
+### Requirement of Kernel Headers
+
+The Partha Agent container requires *Kernel Headers* package to be installed on the base host for eBPF support. 
+
+This requirement is not applicable on Google Container Optimized OS (COS) (used in GKE environments), as the partha container will itself download 
+the currently running Kernel's Headers.
+
+The Partha Helm Chart includes a parameter `partha_config.install_kern_headers` which, if enabled, the Partha container itself will try installing
+the Kernel Headers package to the base OS. The parameter is disabled by default as on enabling this, the container may make changes to the base OS.
+
+Please refer to [Kernel Headers Installation](https://gyeeta.io/docs/installation/partha_install#kernel-headers) for instructions on installing 
+Kernel Headers directly on the base OS.
+
 
 ## Install Instructions
 
@@ -54,7 +69,7 @@ For Kubernetes versions 1.25+, users may need to enable the `priviliged` Partha 
 priviliged pods are set to be rejected.
 
 
-## Partha Chart Parameters {#partha-parameters}
+## Partha Chart Parameters
 
 The default Chart config can be obtained using the command :
 
@@ -112,7 +127,6 @@ Users can analyze the logs by running the command :
 ```bash
 
 # Get the Partha pod name and fill in PARTHAPOD env
-
 kubectl exec -it $PARTHAPOD -- more /hostdata/log/partha.log
 
 ```
