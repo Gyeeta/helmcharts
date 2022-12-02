@@ -9,8 +9,9 @@ The Partha Host Agent is installed as a Daemonset as it needs to be installed on
 
 ## Prerequisites
 
-- Kubernetes 1.19+
-- Helm 3.2.0+
+- Kubernetes version 1.19+
+- kubectl command version 1.19+
+- Helm version 3.2.0+
 - Linux kernel version 4.4+
 
 ### Requirement of Kernel Headers
@@ -26,36 +27,6 @@ the Kernel Headers package to the base OS. The parameter is disabled by default 
 Please refer to [Kernel Headers Installation](https://gyeeta.io/docs/installation/partha_install#kernel-headers) for instructions on installing 
 Kernel Headers directly on the base OS.
 
-
-## Install Instructions
-
-The steps to install the Partha Helm chart are :
-
-- Add Gyeeta Repo to Helm
-- Fetch and edit the values.yaml for the Partha chart
-- Install the Partha chart with the edited values
-
-```bash
-
-helm repo add gyeeta https://gyeeta.io/helmcharts
-helm repo update
-helm show values gyeeta/partha > /tmp/partha.yaml
-
-# Thereafter you can edit the /tmp/partha.yaml file if you need to change any option. 
-# After editing the /tmp/partha.yaml, install the Partha Helm chart using :
-
-helm install --namespace gyeeta --create-namespace partha1  gyeeta/partha -f /tmp/partha.yaml
-
-```
-
-## Uninstalling the Chart
-
-To uninstall the Partha deployment say `partha1` as per command above :
-
-```bash
-helm uninstall partha1
-```
-
 ## Security Requirements
 
 The Partha container will need to run as a `priviliged` container as it needs Linux Capabilities beyond the standard capabilities
@@ -66,7 +37,50 @@ namespaces.
 
 For Kubernetes versions 1.25+, users may need to enable the `priviliged` Partha container by enabling the 
 [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission) for the Partha pod Namespace if
-priviliged pods are set to be rejected.
+priviliged pods are set to be rejected. 
+
+The command to enable this is shown below. This creates the `gyeeta` namespace and allows priviliged containers.
+
+```bash
+# Label namespace gyeeta so as to allow privileged containers
+kubectl create ns gyeeta 2> /dev/null || :
+kubectl label --overwrite ns gyeeta \
+		pod-security.kubernetes.io/enforce=privileged \
+		pod-security.kubernetes.io/enforce-version=latest
+```
+
+## Install Instructions
+
+The steps to install the Partha Helm chart are :
+
+- Add Gyeeta Repo to Helm
+- Fetch and edit the values.yaml for the Partha chart
+- Install the Partha chart with the edited values
+
+```bash
+helm repo add gyeeta https://gyeeta.io/helmcharts
+helm repo update
+helm show values gyeeta/partha > /tmp/partha.yaml
+
+# Label namespace gyeeta so as to allow privileged containers
+kubectl create ns gyeeta 2> /dev/null || :
+kubectl label --overwrite ns gyeeta \
+		pod-security.kubernetes.io/enforce=privileged \
+		pod-security.kubernetes.io/enforce-version=latest
+
+# Thereafter you can edit the /tmp/partha.yaml file if you need to change any option. 
+# After editing the /tmp/partha.yaml, install the Partha Helm chart using :
+
+helm install --namespace gyeeta --create-namespace partha1  gyeeta/partha -f /tmp/partha.yaml
+```
+
+## Uninstalling the Chart
+
+To uninstall the Partha deployment say `partha1` as per command above :
+
+```bash
+helm uninstall partha1
+```
 
 
 ## Partha Chart Parameters
@@ -103,7 +117,7 @@ The Helm chart install will fail if these parameters are not provided. Explanati
 | `partha_config` `.response_sampling_percent` | Percent of workload to be analyzed for Response and QPS Calculations | `Number` | `100` |
 | `partha_config.capture_errcode` | Capture HTTP Error codes | `Boolean` | `true` |
 | `partha_config.logtofile` | Process Log sent to file instead of stdout/stderr. If true will use the `emptyDir` mount point for logging | `Boolean` | `true` |
-| `partha_config` `.install_kern_headers` | Install Kernel Headers on hosts without Kernel Headers (beta) and valid only for Debian, Ubuntu, and Redhat/Amazon Linux | `Boolean` | `false` |
+| `partha_config` `.install_kern_headers` | Install Kernel Headers on hosts without Kernel Headers | `Boolean` | `false` |
 
 ### Other parameters
 
@@ -125,9 +139,7 @@ If `partha_config.logtofile` is set to `true`, then the Partha process logs will
 Users can analyze the logs by running the command :
 
 ```bash
-
 # Get the Partha pod name and fill in PARTHAPOD env
 kubectl exec -it $PARTHAPOD -- more /hostdata/log/partha.log
-
 ```
 
