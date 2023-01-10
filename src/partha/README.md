@@ -14,12 +14,21 @@ The Partha Host Agent is installed as a Daemonset as it needs to be installed on
 - Helm version 3.2.0+
 - Linux kernel version 4.4+
 
-### Requirement of Kernel Headers
+### Requirement of Kernel Headers for older kernels
 
-The Partha Agent container requires *Kernel Headers* package to be installed on the base host for eBPF support. 
+The Partha Agent container requires *Kernel Headers* package to be installed on the base host for eBPF support on older kernels.
 
-This requirement is not applicable on Google Container Optimized OS (COS) (used in GKE environments), as the partha container will itself download 
-the currently running Kernel's Headers.
+#### Older Distributions where Kernel Headers package needed 
+
+- Ubuntu 20 and below
+- Debian 11 and below
+- RHEL, CentOS, Rocky Linux 8
+- Amazon Linux 1 and 2
+- Fedora Linux 35 and below
+
+On Google Container Optimized OS (COS) (used in GKE environments), the partha container will itself download the currently running Kernel's Headers.
+
+Newer Distributions include eBPF CO-RE BTF (BPF Type Format) Support and do not require *Kernel Headers* for eBPF based applications.
 
 The Partha Helm Chart includes a parameter `partha_config.install_kern_headers` which, if enabled, the Partha container itself will try installing
 the Kernel Headers package to the base OS. The parameter is disabled by default as on enabling this, the container may make changes to the base OS.

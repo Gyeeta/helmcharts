@@ -1,9 +1,9 @@
 apiVersion: v2
-version: 0.1.1
-appVersion: 0.1.1
+version: 0.2.0
+appVersion: 0.2.0
 description: Provides Madhava - Gyeeta's Intermediate Server component
 home: https://github.com/Gyeeta/helmcharts/tree/main/madhava
-icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/ms-icon-310x310.png
+icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/android-chrome-192x192.png
 keywords:
   - monitoring
   - analytics
