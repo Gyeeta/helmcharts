@@ -1,6 +1,6 @@
 apiVersion: v2
-version: 0.2.0
-appVersion: 0.2.0
+version: 0.3.0
+appVersion: 0.3.0
 description: Provides partha - the Host Monitor Agent of Gyeeta for Observability of Hosts
 home: https://github.com/Gyeeta/helmcharts/tree/main/partha
 icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/android-chrome-192x192.png
