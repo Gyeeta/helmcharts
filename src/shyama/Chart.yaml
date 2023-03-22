@@ -1,6 +1,6 @@
 apiVersion: v2
-version: 0.3.0
-appVersion: 0.3.0
+version: 0.3.1
+appVersion: 0.3.1
 description: Provides Shyama - Gyeeta's Central Server component
 home: https://github.com/Gyeeta/helmcharts/tree/main/shyama
 icon: https://raw.githubusercontent.com/Gyeeta/frontend/main/public/android-chrome-192x192.png
