@@ -94,6 +94,10 @@ partha_config:
   # Capture HTTP Error codes
   capture_errcode: true
 
+  # Enable Process Delays Collection if disabled in OS. Valid values are 0, 1, 2 with 1 as default. 
+  # If set to 2, will also enable the Delay collection from OS startup on next boot. 
+  enable_task_delays: 1
+
   # Debug and Process Log to file instead of stdout/stderr. If true will use the emptyDir mount point for logging to log/partha.log
   logtofile: true
 

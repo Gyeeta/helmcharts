@@ -49,6 +49,7 @@ For Kubernetes versions 1.25+, users may need to enable the `priviliged` Partha 
 priviliged pods are set to be rejected. 
 
 The command to enable this is shown below. This creates the `gyeeta` namespace and allows priviliged containers.
+The commands below are included in the [Install Instructions](#install-instructions) section.
 
 ```bash
 # Label namespace gyeeta so as to allow privileged containers
@@ -125,6 +126,7 @@ The Helm chart install will fail if these parameters are not provided. Explanati
 | `partha_config.zone_name` | Zone Name : Ignore if `cloud_type` is set. For on-prem or other clouds, specify as the Network Zone name | `String` | `""` |
 | `partha_config` `.response_sampling_percent` | Percent of workload to be analyzed for Response and QPS Calculations | `Number` | `100` |
 | `partha_config.capture_errcode` | Capture HTTP Error codes | `Boolean` | `true` |
+| `partha_config.enable_task_delays` | Enable Process Delays if not set | `Number` | `1` |
 | `partha_config.logtofile` | Process Log sent to file instead of stdout/stderr. If true will use the `emptyDir` mount point for logging | `Boolean` | `true` |
 | `partha_config` `.install_kern_headers` | Install Kernel Headers on hosts without Kernel Headers | `Boolean` | `false` |
 
